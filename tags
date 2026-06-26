@@ -3598,6 +3598,7 @@ WindowsConsoleFeatures	.venv/lib/python3.12/site-packages/pip/_vendor/rich/_wind
 WindowsConsoleFeatures	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/_windows.py	/^class WindowsConsoleFeatures:$/;"	c
 WindowsCoordinates	.venv/lib/python3.12/site-packages/pip/_vendor/rich/_win32_console.py	/^class WindowsCoordinates(NamedTuple):$/;"	c
 WindowsCoordinates	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/_win32_console.py	/^class WindowsCoordinates(NamedTuple):$/;"	c
+WorkDir	hive/dispatcher/workdir.py	/^class WorkDir:$/;"	c
 WorkingSet	.venv/lib/python3.12/site-packages/pip/_vendor/pkg_resources/__init__.py	/^class WorkingSet:$/;"	c
 WorkingSet	.venv/lib64/python3.12/site-packages/pip/_vendor/pkg_resources/__init__.py	/^class WorkingSet:$/;"	c
 WrappedSocket	.venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/pyopenssl.py	/^class WrappedSocket(object):$/;"	c
@@ -5798,6 +5799,7 @@ __init__	.venv/lib64/python3.12/site-packages/pip/_vendor/urllib3/util/ssl_.py	/
 __init__	.venv/lib64/python3.12/site-packages/pip/_vendor/urllib3/util/ssltransport.py	/^    def __init__($/;"	m	class:SSLTransport
 __init__	.venv/lib64/python3.12/site-packages/pip/_vendor/urllib3/util/timeout.py	/^    def __init__(self, total=None, connect=_Default, read=_Default):$/;"	m	class:Timeout
 __init__	hive/dispatcher/scanner.py	/^    def __init__(self, root: str | Path):$/;"	m	class:Scanner
+__init__	hive/dispatcher/workdir.py	/^    def __init__(self, root: str | Path):$/;"	m	class:WorkDir
 __init_subclass__	.venv/lib/python3.12/site-packages/pip/_vendor/typing_extensions.py	/^                    def __init_subclass__(*args, **kwargs):$/;"	f	member:deprecated.__call__	file:
 __init_subclass__	.venv/lib/python3.12/site-packages/pip/_vendor/typing_extensions.py	/^                def __init_subclass__(cls):$/;"	m	class:NewType.__mro_entries__.Dummy
 __init_subclass__	.venv/lib/python3.12/site-packages/pip/_vendor/typing_extensions.py	/^        def __init_subclass__(cls) -> None:$/;"	m	class:ParamSpec	typeref:typename:None
@@ -10460,6 +10462,7 @@ create	.venv/lib64/python3.12/site-packages/pip/_internal/index/collector.py	/^ 
 create	.venv/lib64/python3.12/site-packages/pip/_internal/index/package_finder.py	/^    def create($/;"	m	class:CandidateEvaluator	typeref:typename:"CandidateEvaluator"
 create	.venv/lib64/python3.12/site-packages/pip/_internal/index/package_finder.py	/^    def create($/;"	m	class:PackageFinder	typeref:typename:"PackageFinder"
 create	.venv/lib64/python3.12/site-packages/pip/_internal/models/search_scope.py	/^    def create($/;"	m	class:SearchScope	typeref:typename:"SearchScope"
+create	hive/dispatcher/workdir.py	/^    def create(self, job_id: str) -> Path:$/;"	m	class:WorkDir	typeref:typename:Path
 createLock	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/__init__.py	/^        def createLock(self):$/;"	m	class:NullHandler
 createLock	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/__init__.py	/^        def createLock(self):$/;"	m	class:NullHandler
 create_bound_method	.venv/lib/python3.12/site-packages/pip/_vendor/urllib3/packages/six.py	/^    create_bound_method = types.MethodType$/;"	v
@@ -16871,6 +16874,7 @@ test	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/scope.py	/^    def te
 test	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/style.py	/^    def test(self, text: Optional[str] = None) -> None:$/;"	m	class:Style	typeref:typename:None
 test_card	.venv/lib/python3.12/site-packages/pip/_vendor/rich/__main__.py	/^    test_card = make_test_card()$/;"	v
 test_card	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/__main__.py	/^    test_card = make_test_card()$/;"	v
+test_create_workdir	tests/unit/test_workdir.py	/^def test_create_workdir() -> None:$/;"	f	typeref:typename:None
 test_job_roundtrip	tests/test_job.py	/^def test_job_roundtrip() -> None:$/;"	f	typeref:typename:None
 test_manifest_generation	tests/unit/test_manifest.py	/^def test_manifest_generation():$/;"	f
 test_requires	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
