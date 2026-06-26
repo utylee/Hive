@@ -1,4 +1,9 @@
+from __future__ import annotations
+
 from argparse import ArgumentParser
+from pathlib import Path
+
+from hive.worker.runner import run_job
 
 
 def main() -> int:
@@ -12,10 +17,11 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.command == "run":
-        print(args.job_dir)
+        return run_job(Path(args.job_dir))
 
-    return 0
+    return 1
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
