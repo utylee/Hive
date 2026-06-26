@@ -1818,6 +1818,8 @@ Dummy	.venv/lib/python3.12/site-packages/pip/_vendor/typing_extensions.py	/^    
 Dummy	.venv/lib64/python3.12/site-packages/pip/_vendor/typing_extensions.py	/^            class Dummy:$/;"	c	member:NewType.__mro_entries__	file:
 DummyConnection	.venv/lib/python3.12/site-packages/pip/_vendor/urllib3/connection.py	/^class DummyConnection(object):$/;"	c
 DummyConnection	.venv/lib64/python3.12/site-packages/pip/_vendor/urllib3/connection.py	/^class DummyConnection(object):$/;"	c
+DummyExecutor	hive/worker/dummy.py	/^class DummyExecutor:$/;"	c
+DummyExecutor	hive/worker/executors/dummy.py	/^class DummyExecutor:$/;"	c
 DummyRewriteHook	.venv/lib/python3.12/site-packages/_pytest/assertion/__init__.py	/^class DummyRewriteHook:$/;"	c
 DummyRewriteHook	.venv/lib64/python3.12/site-packages/_pytest/assertion/__init__.py	/^class DummyRewriteHook:$/;"	c
 Dumper	.venv/lib/python3.12/site-packages/yaml/dumper.py	/^class Dumper(Emitter, Serializer, Representer, Resolver):$/;"	c
@@ -22550,6 +22552,8 @@ executable	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/scripts.py	/^ 
 executable	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/scripts.py	/^    executable = None  # for shebangs$/;"	v	class:ScriptMaker
 execute	.venv/lib/python3.12/site-packages/_pytest/fixtures.py	/^    def execute(self, request: SubRequest) -> FixtureValue:$/;"	m	class:FixtureDef	typeref:typename:FixtureValue
 execute	.venv/lib64/python3.12/site-packages/_pytest/fixtures.py	/^    def execute(self, request: SubRequest) -> FixtureValue:$/;"	m	class:FixtureDef	typeref:typename:FixtureValue
+execute	hive/worker/dummy.py	/^    def execute(self, job_dir: Path, manifest: dict) -> dict:$/;"	m	class:DummyExecutor	typeref:typename:dict
+execute	hive/worker/executors/dummy.py	/^    def execute(self, job_dir: Path, manifest: dict) -> dict:$/;"	m	class:DummyExecutor	typeref:typename:dict
 execution_confs	.venv/lib/python3.12/site-packages/pygments/lexers/c_like.py	/^    execution_confs = {'<<<', '>>>'}$/;"	v	class:CudaLexer
 execution_confs	.venv/lib64/python3.12/site-packages/pygments/lexers/c_like.py	/^    execution_confs = {'<<<', '>>>'}$/;"	v	class:CudaLexer
 exists	.venv/lib/python3.12/site-packages/_pytest/_py/path.py	/^    def exists(self):$/;"	m	class:Checkers
@@ -35336,7 +35340,6 @@ run_command	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/util.py	/^   
 run_command	.venv/lib64/python3.12/site-packages/pip/_internal/vcs/versioncontrol.py	/^    def run_command($/;"	m	class:VersionControl	typeref:typename:str
 run_command	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/index.py	/^    def run_command(self, cmd, input_data=None):$/;"	m	class:PackageIndex
 run_command	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/util.py	/^    def run_command(self, cmd, **kwargs):$/;"	m	class:SubprocessMixin
-run_dummy	hive/worker/executors/dummy.py	/^def run_dummy(job: dict) -> dict:$/;"	f	typeref:typename:dict
 run_job	hive/worker/runner.py	/^def run_job(job_dir: Path) -> int:$/;"	f	typeref:typename:int
 run_local	hive/core/remote.py	/^def run_local($/;"	f	typeref:typename:subprocess.CompletedProcess
 run_main	.venv/lib/python3.12/site-packages/pip/_vendor/pkg_resources/__init__.py	/^    run_main = run_script$/;"	v
@@ -36962,6 +36965,7 @@ test_card	.venv/lib/python3.12/site-packages/pip/_vendor/rich/__main__.py	/^    
 test_card	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/__main__.py	/^    test_card = make_test_card()$/;"	v
 test_create_workdir	tests/unit/test_workdir.py	/^def test_create_workdir() -> None:$/;"	f	typeref:typename:None
 test_dispatcher_run_once	tests/unit/test_dispatcher.py	/^def test_dispatcher_run_once() -> None:$/;"	f	typeref:typename:None
+test_dummy_executor	tests/unit/test_dummy_executor.py	/^def test_dummy_executor():$/;"	f
 test_job_roundtrip	tests/test_job.py	/^def test_job_roundtrip() -> None:$/;"	f	typeref:typename:None
 test_manifest_generation	tests/unit/test_manifest.py	/^def test_manifest_generation():$/;"	f
 test_requires	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
