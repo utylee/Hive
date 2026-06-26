@@ -19,7 +19,7 @@ servers:
 
   legion:
     label: Legion Go
-    ssh_alias: legion
+    ssh_alias: ccy
     worker_root: /tmp/hive_jobs
     comfy_url: http://comfyccy.utylee.mywire.org
     enabled: true
