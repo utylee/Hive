@@ -1,0 +1,13 @@
+nas:
+  jobs_dir: /mnt/nas/jobs
+  output_dir: /mnt/nas/output
+  archive_dir: /mnt/nas/archive
+  failed_dir: /mnt/nas/failed
+
+dispatcher:
+  max_retries: 2
+  poll_interval_sec: 5
+
+job:
+  type: comfy
+  file_pattern: "*.mp4"

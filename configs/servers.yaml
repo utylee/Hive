@@ -1,0 +1,55 @@
+servers:
+  m5:
+    label: Strix Halo
+    ssh_alias: m5
+    worker_root: /tmp/hive_jobs
+    # comfy_url: http://127.0.0.1:8188
+    comfy_url: http://comfy.utylee.mywire.org
+    enabled: true
+    profile:
+      frames_per_batch: 16
+      cleanup_threshold: 2
+
+  mac:
+    label: macbook air m3
+    ssh_alias: mac 
+    worker_root: /tmp/hive_jobs
+    # comfy_url: http://127.0.0.1:8188
+    comfy_url: http://comfymac.utylee.mywire.org
+    enabled: true
+    profile:
+      frames_per_batch: 16
+      cleanup_threshold: 2
+
+  legion:
+    label: Legion Go
+    ssh_alias: legion
+    worker_root: /tmp/hive_jobs
+    # comfy_url: http://127.0.0.1:8188
+    comfy_url: http://comfyccy.utylee.mywire.org
+    enabled: true
+    profile:
+      frames_per_batch: 8
+      cleanup_threshold: 1
+
+  ccy2:
+    label: CCY2
+    ssh_alias: ccy2
+    worker_root: /tmp/hive_jobs
+    # comfy_url: http://127.0.0.1:8188
+    comfy_url: http://comfyccy2.utylee.mywire.org
+    enabled: true
+    profile:
+      frames_per_batch: 16
+      cleanup_threshold: 1
+
+  wsl12:
+    label: wsl12
+    ssh_alias: wsl12
+    worker_root: /tmp/hive_jobs
+    # comfy_url: http://127.0.0.1:8188
+    comfy_url: http://comfywsl.utylee.mywire.org
+    enabled: true
+    profile:
+      frames_per_batch: 32
+      cleanup_threshold: 3
