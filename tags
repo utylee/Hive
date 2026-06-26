@@ -11043,7 +11043,6 @@ exec_module	.venv/lib/python3.12/site-packages/pip/_vendor/urllib3/packages/six.
 exec_module	.venv/lib64/python3.12/site-packages/pip/_vendor/urllib3/packages/six.py	/^    def exec_module(self, module):$/;"	m	class:_SixMetaPathImporter
 executable	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/scripts.py	/^    executable = None  # for shebangs$/;"	v	class:ScriptMaker
 executable	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/scripts.py	/^    executable = None  # for shebangs$/;"	v	class:ScriptMaker
-execute	hive/worker/main.py	/^def execute(job: dict) -> dict:$/;"	f	typeref:typename:dict
 exists	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/wheel.py	/^    def exists(self):$/;"	m	class:Wheel
 exists	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/wheel.py	/^    def exists(self):$/;"	m	class:Wheel
 exists_action	.venv/lib/python3.12/site-packages/pip/_internal/cli/cmdoptions.py	/^def exists_action() -> Option:$/;"	f	typeref:typename:Option
@@ -16021,7 +16020,6 @@ run	.venv/lib64/python3.12/site-packages/pip/_vendor/pygments/sphinxext.py	/^   
 run	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/live.py	/^    def run(self) -> None:$/;"	m	class:_RefreshThread	typeref:typename:None
 run	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/progress.py	/^    def run(self) -> None:$/;"	m	class:_TrackThread	typeref:typename:None
 run	hive/infra/remote.py	/^def run(server, command: str) -> str:$/;"	f	typeref:typename:str
-run	hive/worker/main.py	/^def run(job_path: Path) -> int:$/;"	f	typeref:typename:int
 run_command	.venv/lib/python3.12/site-packages/pip/_internal/vcs/versioncontrol.py	/^    def run_command($/;"	m	class:VersionControl	typeref:typename:str
 run_command	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/index.py	/^    def run_command(self, cmd, input_data=None):$/;"	m	class:PackageIndex
 run_command	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/util.py	/^    def run_command(self, cmd, **kwargs):$/;"	m	class:SubprocessMixin
@@ -16880,7 +16878,7 @@ test	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/style.py	/^    def te
 test_card	.venv/lib/python3.12/site-packages/pip/_vendor/rich/__main__.py	/^    test_card = make_test_card()$/;"	v
 test_card	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/__main__.py	/^    test_card = make_test_card()$/;"	v
 test_create_workdir	tests/unit/test_workdir.py	/^def test_create_workdir() -> None:$/;"	f	typeref:typename:None
-test_dispatcher_run_once	tests/unit/test_dispatcher.py	/^def test_dispatcher_run_once():$/;"	f
+test_dispatcher_run_once	tests/unit/test_dispatcher.py	/^def test_dispatcher_run_once() -> None:$/;"	f	typeref:typename:None
 test_job_roundtrip	tests/test_job.py	/^def test_job_roundtrip() -> None:$/;"	f	typeref:typename:None
 test_manifest_generation	tests/unit/test_manifest.py	/^def test_manifest_generation():$/;"	f
 test_requires	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
