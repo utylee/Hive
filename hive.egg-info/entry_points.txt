@@ -1,3 +1,0 @@
-[console_scripts]
-hive-dispatcher = hive.dispatcher.main:main
-hive-worker = hive.worker.main:main

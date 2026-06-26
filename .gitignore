@@ -1,44 +1,38 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.so
 
-# Virtual Environment
+# Packaging
+*.egg-info/
+build/
+dist/
+pip-wheel-metadata/
+
+# Virtualenv
 .venv/
 venv/
-env/
 
-# pytest
+# Test
 .pytest_cache/
-
-# Ruff
-.ruff_cache/
-
-# mypy
-.mypy_cache/
-
-# Coverage
 .coverage
 htmlcov/
+
+# Lint
+.ruff_cache/
+.mypy_cache/
 
 # IDE
 .vscode/
 .idea/
 
-# macOS
+# OS
 .DS_Store
 
-# Linux
-*~
-
 # Hive runtime
-/tmp/
+runtime/
 workdir/
 logs/
+tmp/
 
-# Generated manifests/results (runtime only)
-manifest.json
-result.json
 
-# Local config (optional)
-configs/local.yaml
