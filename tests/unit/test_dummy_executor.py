@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from hive.worker.dummy import DummyExecutor
+# from hive.worker.dummy import DummyExecutor
+from hive.executors.dummy import DummyExecutor
 
 
 def test_dummy_executor():

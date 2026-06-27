@@ -1227,6 +1227,7 @@ Columns	.venv/lib/python3.12/site-packages/pip/_vendor/rich/columns.py	/^class C
 Columns	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/columns.py	/^class Columns(JupyterMixin):$/;"	c
 Comal80Lexer	.venv/lib/python3.12/site-packages/pygments/lexers/comal.py	/^class Comal80Lexer(RegexLexer):$/;"	c
 Comal80Lexer	.venv/lib64/python3.12/site-packages/pygments/lexers/comal.py	/^class Comal80Lexer(RegexLexer):$/;"	c
+ComfyExecutor	hive/executors/comfy.py	/^class ComfyExecutor:$/;"	c
 Command	.venv/lib/python3.12/site-packages/pip/_internal/cli/base_command.py	/^class Command(CommandContextMixIn):$/;"	c
 Command	.venv/lib64/python3.12/site-packages/pip/_internal/cli/base_command.py	/^class Command(CommandContextMixIn):$/;"	c
 CommandArgs	.venv/lib/python3.12/site-packages/pip/_internal/utils/subprocess.py	/^CommandArgs = List[Union[str, HiddenText]]$/;"	v
@@ -1818,8 +1819,7 @@ Dummy	.venv/lib/python3.12/site-packages/pip/_vendor/typing_extensions.py	/^    
 Dummy	.venv/lib64/python3.12/site-packages/pip/_vendor/typing_extensions.py	/^            class Dummy:$/;"	c	member:NewType.__mro_entries__	file:
 DummyConnection	.venv/lib/python3.12/site-packages/pip/_vendor/urllib3/connection.py	/^class DummyConnection(object):$/;"	c
 DummyConnection	.venv/lib64/python3.12/site-packages/pip/_vendor/urllib3/connection.py	/^class DummyConnection(object):$/;"	c
-DummyExecutor	hive/worker/dummy.py	/^class DummyExecutor:$/;"	c
-DummyExecutor	hive/worker/executors/dummy.py	/^class DummyExecutor:$/;"	c
+DummyExecutor	hive/executors/dummy.py	/^class DummyExecutor:$/;"	c
 DummyRewriteHook	.venv/lib/python3.12/site-packages/_pytest/assertion/__init__.py	/^class DummyRewriteHook:$/;"	c
 DummyRewriteHook	.venv/lib64/python3.12/site-packages/_pytest/assertion/__init__.py	/^class DummyRewriteHook:$/;"	c
 Dumper	.venv/lib/python3.12/site-packages/yaml/dumper.py	/^class Dumper(Emitter, Serializer, Representer, Resolver):$/;"	c
@@ -8984,6 +8984,7 @@ __all__	.venv/lib64/python3.12/site-packages/yaml/representer.py	/^__all__ = ['B
 __all__	.venv/lib64/python3.12/site-packages/yaml/resolver.py	/^__all__ = ['BaseResolver', 'Resolver']$/;"	v
 __all__	.venv/lib64/python3.12/site-packages/yaml/scanner.py	/^__all__ = ['Scanner', 'ScannerError']$/;"	v
 __all__	.venv/lib64/python3.12/site-packages/yaml/serializer.py	/^__all__ = ['Serializer', 'SerializerError']$/;"	v
+__all__	hive/executors/__init__.py	/^__all__ = [$/;"	v
 __all__	hive/scheduler/__init__.py	/^__all__ = [$/;"	v
 __and__	.venv/lib/python3.12/site-packages/packaging/markers.py	/^    def __and__(self, other: Marker) -> Marker:$/;"	m	class:Marker	typeref:typename:Marker
 __and__	.venv/lib/python3.12/site-packages/packaging/specifiers.py	/^    def __and__(self, other: SpecifierSet | str) -> SpecifierSet:$/;"	m	class:SpecifierSet	typeref:typename:SpecifierSet
@@ -22556,8 +22557,8 @@ executable	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/scripts.py	/^ 
 executable	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/scripts.py	/^    executable = None  # for shebangs$/;"	v	class:ScriptMaker
 execute	.venv/lib/python3.12/site-packages/_pytest/fixtures.py	/^    def execute(self, request: SubRequest) -> FixtureValue:$/;"	m	class:FixtureDef	typeref:typename:FixtureValue
 execute	.venv/lib64/python3.12/site-packages/_pytest/fixtures.py	/^    def execute(self, request: SubRequest) -> FixtureValue:$/;"	m	class:FixtureDef	typeref:typename:FixtureValue
-execute	hive/worker/dummy.py	/^    def execute(self, job_dir: Path, manifest: dict) -> dict:$/;"	m	class:DummyExecutor	typeref:typename:dict
-execute	hive/worker/executors/dummy.py	/^    def execute(self, job_dir: Path, manifest: dict) -> dict:$/;"	m	class:DummyExecutor	typeref:typename:dict
+execute	hive/executors/comfy.py	/^    def execute(self, job_dir, manifest):$/;"	m	class:ComfyExecutor
+execute	hive/executors/dummy.py	/^    def execute(self, job_dir: Path, manifest: dict) -> dict:$/;"	m	class:DummyExecutor	typeref:typename:dict
 execution_confs	.venv/lib/python3.12/site-packages/pygments/lexers/c_like.py	/^    execution_confs = {'<<<', '>>>'}$/;"	v	class:CudaLexer
 execution_confs	.venv/lib64/python3.12/site-packages/pygments/lexers/c_like.py	/^    execution_confs = {'<<<', '>>>'}$/;"	v	class:CudaLexer
 exists	.venv/lib/python3.12/site-packages/_pytest/_py/path.py	/^    def exists(self):$/;"	m	class:Checkers

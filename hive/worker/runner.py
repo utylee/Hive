@@ -4,7 +4,11 @@ import json
 import time
 from pathlib import Path
 
-from hive.worker.dummy import DummyExecutor
+# from hive.worker.dummy import DummyExecutor
+# from hive.worker.comfy import ComfyExecutor
+
+from hive.executors.dummy import DummyExecutor
+from hive.executors.comfy import ComfyExecutor
 
 
 def load_manifest(job_dir: Path) -> dict:
@@ -34,7 +38,22 @@ def run_job(job_dir: Path) -> int:
     try:
         manifest = load_manifest(job_dir)
 
-        executor = DummyExecutor()
+
+        # executor = DummyExecutor()
+
+        job_type = manifest.get("type")
+
+        if job_type == "dummy":
+            executor = DummyExecutor()
+
+        elif job_type == "comfy":
+            executor = ComfyExecutor()
+
+        else:
+            raise ValueError(f"Unknown job type: {job_type}")
+
+
+
         result = executor.execute(job_dir, manifest)
 
         result["job_id"] = manifest.get("id")
