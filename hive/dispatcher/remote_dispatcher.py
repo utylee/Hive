@@ -10,6 +10,8 @@ def dispatch_remote_job(server, local_job_dir: Path) -> None:
     remote_job_dir = f"{remote_root}/{local_job_dir.name}"
 
     alias = server.ssh_alias
+    hive_root = getattr(server, "hive_root", "/home/utylee/temp/Hive")
+    python = f"{hive_root}/.venv/bin/python"
 
     remote.mkdir(alias, remote_root)
 
@@ -21,5 +23,5 @@ def dispatch_remote_job(server, local_job_dir: Path) -> None:
 
     remote.exec(
         alias,
-        f"hive-worker run {remote_job_dir}",
+        f"{python} -m hive.worker.main run {remote_job_dir}",
     )
