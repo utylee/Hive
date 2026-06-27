@@ -70,3 +70,28 @@ def write_job_json(path: Path, job: dict[str, Any]) -> None:
         json.dumps(job, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+
+    def build_job(
+        *,
+        job_type: str,
+        input_file: Path,
+        server_name: str,
+        server: dict[str, Any],
+        worker_root: str,
+        profile: dict[str, Any],
+    ) -> dict[str, Any]:
+        job_id = make_job_id(input_file)
+
+        paths = build_job_paths(worker_root, job_id)
+
+        job = make_job_json(
+            job_id=job_id,
+            job_type=job_type,
+            input_file=input_file,
+            server_name=server_name,
+            server=server,
+            paths=paths,
+            profile=profile,
+        )
+
+        return job

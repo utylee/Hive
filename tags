@@ -11549,7 +11549,7 @@ __init__	.venv/lib64/python3.12/site-packages/yaml/tokens.py	/^    def __init__(
 __init__	.venv/lib64/python3.12/site-packages/yaml/tokens.py	/^    def __init__(self, value, start_mark, end_mark):$/;"	m	class:AliasToken
 __init__	.venv/lib64/python3.12/site-packages/yaml/tokens.py	/^    def __init__(self, value, start_mark, end_mark):$/;"	m	class:AnchorToken
 __init__	.venv/lib64/python3.12/site-packages/yaml/tokens.py	/^    def __init__(self, value, start_mark, end_mark):$/;"	m	class:TagToken
-__init__	hive/dispatcher/dispatcher.py	/^    def __init__($/;"	m	class:Dispatcher	typeref:typename:None
+__init__	hive/dispatcher/dispatcher.py	/^    def __init__($/;"	m	class:Dispatcher
 __init__	hive/dispatcher/scanner.py	/^    def __init__(self, root: str | Path):$/;"	m	class:Scanner
 __init__	hive/dispatcher/workdir.py	/^    def __init__(self, root: str | Path):$/;"	m	class:WorkDir
 __init_subclass__	.venv/lib/python3.12/site-packages/pip/_vendor/typing_extensions.py	/^                    def __init_subclass__(*args, **kwargs):$/;"	f	member:deprecated.__call__	file:
@@ -20210,6 +20210,7 @@ build_editable	.venv/lib64/python3.12/site-packages/pip/_vendor/pyproject_hooks/
 build_editable	.venv/lib64/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py	/^def build_editable(wheel_directory, config_settings, metadata_directory=None):$/;"	f
 build_iter_view	.venv/lib/python3.12/site-packages/pip/_vendor/resolvelib/structs.py	/^def build_iter_view(matches):$/;"	f
 build_iter_view	.venv/lib64/python3.12/site-packages/pip/_vendor/resolvelib/structs.py	/^def build_iter_view(matches):$/;"	f
+build_job	hive/core/job.py	/^    def build_job($/;"	f	function:write_job_json	typeref:typename:dict[str,Any]	file:
 build_job_paths	hive/core/job.py	/^def build_job_paths(worker_root: str, job_id: str) -> JobPaths:$/;"	f	typeref:typename:JobPaths
 build_netloc	.venv/lib/python3.12/site-packages/pip/_internal/utils/misc.py	/^def build_netloc(host: str, port: Optional[int]) -> str:$/;"	f	typeref:typename:str
 build_netloc	.venv/lib64/python3.12/site-packages/pip/_internal/utils/misc.py	/^def build_netloc(host: str, port: Optional[int]) -> str:$/;"	f	typeref:typename:str
@@ -22242,6 +22243,7 @@ empty_provider	.venv/lib64/python3.12/site-packages/pip/_vendor/pkg_resources/__
 enable_tracing	.venv/lib/python3.12/site-packages/pluggy/_manager.py	/^    def enable_tracing(self) -> Callable[[], None]:$/;"	m	class:PluginManager	typeref:typename:Callable[[],None]
 enable_tracing	.venv/lib64/python3.12/site-packages/pluggy/_manager.py	/^    def enable_tracing(self) -> Callable[[], None]:$/;"	m	class:PluginManager	typeref:typename:Callable[[],None]
 enabled	hive/server.py	/^    enabled: bool = True$/;"	v	class:Server	typeref:typename:bool
+enabled	tests/unit/test_dispatcher.py	/^        enabled=True,$/;"	Y
 encircle	.venv/lib/python3.12/site-packages/pip/_vendor/rich/style.py	/^    encircle = _Bit(11)$/;"	v	class:Style
 encircle	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/style.py	/^    encircle = _Bit(11)$/;"	v	class:Style
 enclosing_tokens	.venv/lib/python3.12/site-packages/packaging/_tokenizer.py	/^    def enclosing_tokens($/;"	m	class:Tokenizer	typeref:typename:Generator[None,None,None]
@@ -22731,6 +22733,7 @@ failed_subtests_key	.venv/lib/python3.12/site-packages/_pytest/subtests.py	/^fai
 failed_subtests_key	.venv/lib64/python3.12/site-packages/_pytest/subtests.py	/^failed_subtests_key = StashKey[defaultdict[str, int]]()$/;"	v
 failfast	.venv/lib/python3.12/site-packages/_pytest/unittest.py	/^    failfast = False$/;"	v	class:TestCaseFunction
 failfast	.venv/lib64/python3.12/site-packages/_pytest/unittest.py	/^    failfast = False$/;"	v	class:TestCaseFunction
+fake_dispatch_remote_job	tests/unit/test_dispatcher.py	/^    def fake_dispatch_remote_job(server, job_dir):$/;"	f	function:test_dispatcher_run_once	file:
 families	.venv/lib/python3.12/site-packages/_pytest/junitxml.py	/^families = {  # pylint: disable=dict-init-mutate$/;"	v
 families	.venv/lib64/python3.12/site-packages/_pytest/junitxml.py	/^families = {  # pylint: disable=dict-init-mutate$/;"	v
 fault_handler_original_stderr_fd_key	.venv/lib/python3.12/site-packages/_pytest/faulthandler.py	/^fault_handler_original_stderr_fd_key = StashKey[int]()$/;"	v
@@ -36359,6 +36362,7 @@ sqlite_prompt_re	.venv/lib/python3.12/site-packages/pygments/lexers/sql.py	/^sql
 sqlite_prompt_re	.venv/lib64/python3.12/site-packages/pygments/lexers/sql.py	/^sqlite_prompt_re = re.compile(r'^(?:sqlite|   ...)>(?= )')$/;"	v
 src	.venv/lib/python3.12/site-packages/pip/_internal/cli/cmdoptions.py	/^src: Callable[..., Option] = partial($/;"	v	typeref:typename:Callable[..., Option]
 src	.venv/lib64/python3.12/site-packages/pip/_internal/cli/cmdoptions.py	/^src: Callable[..., Option] = partial($/;"	v	typeref:typename:Callable[..., Option]
+ssh_alias	tests/unit/test_dispatcher.py	/^        ssh_alias="dummy",$/;"	Y
 ssl	.venv/lib/python3.12/site-packages/pip/_internal/network/session.py	/^        import _ssl as ssl$/;"	I	function:user_agent	file:	nameref:module:_ssl
 ssl	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/compat.py	/^    ssl = None$/;"	v
 ssl	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/util.py	/^    ssl = None$/;"	v
@@ -36968,7 +36972,7 @@ test	.venv/lib64/python3.12/site-packages/pygments/scanner.py	/^    def test(sel
 test_card	.venv/lib/python3.12/site-packages/pip/_vendor/rich/__main__.py	/^    test_card = make_test_card()$/;"	v
 test_card	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/__main__.py	/^    test_card = make_test_card()$/;"	v
 test_create_workdir	tests/unit/test_workdir.py	/^def test_create_workdir() -> None:$/;"	f	typeref:typename:None
-test_dispatcher_run_once	tests/unit/test_dispatcher.py	/^def test_dispatcher_run_once() -> None:$/;"	f	typeref:typename:None
+test_dispatcher_run_once	tests/unit/test_dispatcher.py	/^def test_dispatcher_run_once(monkeypatch) -> None:$/;"	f	typeref:typename:None
 test_dummy_executor	tests/unit/test_dummy_executor.py	/^def test_dummy_executor():$/;"	f
 test_job_roundtrip	tests/test_job.py	/^def test_job_roundtrip() -> None:$/;"	f	typeref:typename:None
 test_manifest_generation	tests/unit/test_manifest.py	/^def test_manifest_generation():$/;"	f
@@ -36977,7 +36981,7 @@ test_remote_copy_from	tests/integration/test_remote_copy_from.py	/^def test_remo
 test_remote_worker_on_first_server	tests/integration/test_remote_worker.py	/^def test_remote_worker_on_first_server() -> None:$/;"	f	typeref:typename:None
 test_requires	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
 test_requires	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
-test_result_pull	tests/test_result_pull.py	/^def test_result_pull():$/;"	f
+test_result_pull	tests/integration/test_result_pull.py	/^def test_result_pull():$/;"	f
 test_run_job_missing_directory	tests/unit/test_runner.py	/^def test_run_job_missing_directory():$/;"	f
 test_scan_mp4	tests/unit/test_scanner.py	/^def test_scan_mp4():$/;"	f
 test_tmproot	.venv/lib/python3.12/site-packages/_pytest/legacypath.py	/^    def test_tmproot(self) -> LEGACY_PATH:$/;"	m	class:Testdir	typeref:typename:LEGACY_PATH
@@ -41744,6 +41748,7 @@ words	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/_wrap.py	/^def words
 words	.venv/lib64/python3.12/site-packages/pygments/lexer.py	/^class words(Future):$/;"	c
 words_	.venv/lib/python3.12/site-packages/pygments/lexers/usd.py	/^from pygments.lexer import words as words_$/;"	Y	nameref:unknown:words
 words_	.venv/lib64/python3.12/site-packages/pygments/lexers/usd.py	/^from pygments.lexer import words as words_$/;"	Y	nameref:unknown:words
+worker_root	tests/unit/test_dispatcher.py	/^        worker_root="\/tmp\/hive_jobs",$/;"	Y
 working_set	.venv/lib/python3.12/site-packages/pip/_vendor/pkg_resources/__init__.py	/^    working_set = WorkingSet()$/;"	v
 working_set	.venv/lib64/python3.12/site-packages/pip/_vendor/pkg_resources/__init__.py	/^    working_set = WorkingSet()$/;"	v
 wrap	.venv/lib/python3.12/site-packages/pip/_vendor/pygments/formatters/html.py	/^    def wrap(self, source):$/;"	m	class:HtmlFormatter
