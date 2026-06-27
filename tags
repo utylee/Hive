@@ -21987,6 +21987,7 @@ discard	.venv/lib/python3.12/site-packages/pip/_vendor/urllib3/_collections.py	/
 discard	.venv/lib64/python3.12/site-packages/pip/_vendor/urllib3/_collections.py	/^    def discard(self, key):$/;"	m	class:HTTPHeaderDict
 dispatch_hook	.venv/lib/python3.12/site-packages/pip/_vendor/requests/hooks.py	/^def dispatch_hook(key, hooks, hook_data, **kwargs):$/;"	f
 dispatch_hook	.venv/lib64/python3.12/site-packages/pip/_vendor/requests/hooks.py	/^def dispatch_hook(key, hooks, hook_data, **kwargs):$/;"	f
+dispatch_remote_job	hive/dispatcher/remote_dispatcher.py	/^def dispatch_remote_job(server, local_job_dir: Path) -> None:$/;"	f	typeref:typename:None
 display	.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py	/^    def display(self, expr: ast.expr) -> ast.expr:$/;"	m	class:AssertionRewriter	typeref:typename:ast.expr
 display	.venv/lib/python3.12/site-packages/pip/_vendor/rich/jupyter.py	/^def display(segments: Iterable[Segment], text: str) -> None:$/;"	f	typeref:typename:None
 display	.venv/lib64/python3.12/site-packages/_pytest/assertion/rewrite.py	/^    def display(self, expr: ast.expr) -> ast.expr:$/;"	m	class:AssertionRewriter	typeref:typename:ast.expr
@@ -36968,6 +36969,7 @@ test_dispatcher_run_once	tests/unit/test_dispatcher.py	/^def test_dispatcher_run
 test_dummy_executor	tests/unit/test_dummy_executor.py	/^def test_dummy_executor():$/;"	f
 test_job_roundtrip	tests/test_job.py	/^def test_job_roundtrip() -> None:$/;"	f	typeref:typename:None
 test_manifest_generation	tests/unit/test_manifest.py	/^def test_manifest_generation():$/;"	f
+test_remote_worker_on_first_server	tests/integration/test_remote_worker.py	/^def test_remote_worker_on_first_server() -> None:$/;"	f	typeref:typename:None
 test_requires	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
 test_requires	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
 test_run_job_missing_directory	tests/unit/test_runner.py	/^def test_run_job_missing_directory():$/;"	f
