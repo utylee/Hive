@@ -21988,7 +21988,7 @@ discard	.venv/lib/python3.12/site-packages/pip/_vendor/urllib3/_collections.py	/
 discard	.venv/lib64/python3.12/site-packages/pip/_vendor/urllib3/_collections.py	/^    def discard(self, key):$/;"	m	class:HTTPHeaderDict
 dispatch_hook	.venv/lib/python3.12/site-packages/pip/_vendor/requests/hooks.py	/^def dispatch_hook(key, hooks, hook_data, **kwargs):$/;"	f
 dispatch_hook	.venv/lib64/python3.12/site-packages/pip/_vendor/requests/hooks.py	/^def dispatch_hook(key, hooks, hook_data, **kwargs):$/;"	f
-dispatch_remote_job	hive/dispatcher/remote_dispatcher.py	/^def dispatch_remote_job(server, local_job_dir: Path) -> None:$/;"	f	typeref:typename:None
+dispatch_remote_job	hive/dispatcher/remote_dispatcher.py	/^def dispatch_remote_job(server, local_job_dir: Path): $/;"	f
 display	.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py	/^    def display(self, expr: ast.expr) -> ast.expr:$/;"	m	class:AssertionRewriter	typeref:typename:ast.expr
 display	.venv/lib/python3.12/site-packages/pip/_vendor/rich/jupyter.py	/^def display(segments: Iterable[Segment], text: str) -> None:$/;"	f	typeref:typename:None
 display	.venv/lib64/python3.12/site-packages/_pytest/assertion/rewrite.py	/^    def display(self, expr: ast.expr) -> ast.expr:$/;"	m	class:AssertionRewriter	typeref:typename:ast.expr
@@ -28765,6 +28765,7 @@ load_pyproject_toml	.venv/lib/python3.12/site-packages/pip/_internal/pyproject.p
 load_pyproject_toml	.venv/lib/python3.12/site-packages/pip/_internal/req/req_install.py	/^    def load_pyproject_toml(self) -> None:$/;"	m	class:InstallRequirement	typeref:typename:None
 load_pyproject_toml	.venv/lib64/python3.12/site-packages/pip/_internal/pyproject.py	/^def load_pyproject_toml($/;"	f	typeref:typename:Optional[BuildSystemDetails]
 load_pyproject_toml	.venv/lib64/python3.12/site-packages/pip/_internal/req/req_install.py	/^    def load_pyproject_toml(self) -> None:$/;"	m	class:InstallRequirement	typeref:typename:None
+load_result	hive/dispatcher/remote_dispatcher.py	/^def load_result(job_dir: Path) -> dict:$/;"	f	typeref:typename:dict
 load_servers	hive/core/config.py	/^def load_servers(path="configs\/servers.yaml"):$/;"	f
 load_servers	hive/infra/config.py	/^def load_servers(path: str | Path = "configs\/servers.yaml") -> list[Server]:$/;"	f	typeref:typename:list[Server]
 load_servers_config	hive/core/config.py	/^def load_servers_config(path: str | Path = "configs\/servers.yaml") -> dict[str, Any]:$/;"	f	typeref:typename:dict[str,Any]
@@ -36976,6 +36977,7 @@ test_remote_copy_from	tests/integration/test_remote_copy_from.py	/^def test_remo
 test_remote_worker_on_first_server	tests/integration/test_remote_worker.py	/^def test_remote_worker_on_first_server() -> None:$/;"	f	typeref:typename:None
 test_requires	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
 test_requires	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
+test_result_pull	tests/test_result_pull.py	/^def test_result_pull():$/;"	f
 test_run_job_missing_directory	tests/unit/test_runner.py	/^def test_run_job_missing_directory():$/;"	f
 test_scan_mp4	tests/unit/test_scanner.py	/^def test_scan_mp4():$/;"	f
 test_tmproot	.venv/lib/python3.12/site-packages/_pytest/legacypath.py	/^    def test_tmproot(self) -> LEGACY_PATH:$/;"	m	class:Testdir	typeref:typename:LEGACY_PATH
