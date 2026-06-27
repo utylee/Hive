@@ -8984,6 +8984,7 @@ __all__	.venv/lib64/python3.12/site-packages/yaml/representer.py	/^__all__ = ['B
 __all__	.venv/lib64/python3.12/site-packages/yaml/resolver.py	/^__all__ = ['BaseResolver', 'Resolver']$/;"	v
 __all__	.venv/lib64/python3.12/site-packages/yaml/scanner.py	/^__all__ = ['Scanner', 'ScannerError']$/;"	v
 __all__	.venv/lib64/python3.12/site-packages/yaml/serializer.py	/^__all__ = ['Serializer', 'SerializerError']$/;"	v
+__all__	hive/scheduler/__init__.py	/^__all__ = [$/;"	v
 __and__	.venv/lib/python3.12/site-packages/packaging/markers.py	/^    def __and__(self, other: Marker) -> Marker:$/;"	m	class:Marker	typeref:typename:Marker
 __and__	.venv/lib/python3.12/site-packages/packaging/specifiers.py	/^    def __and__(self, other: SpecifierSet | str) -> SpecifierSet:$/;"	m	class:SpecifierSet	typeref:typename:SpecifierSet
 __and__	.venv/lib/python3.12/site-packages/pip/_internal/resolution/resolvelib/base.py	/^    def __and__(self, other: InstallRequirement) -> "Constraint":$/;"	m	class:Constraint	typeref:typename:"Constraint"
@@ -33051,6 +33052,7 @@ pick_bool	.venv/lib/python3.12/site-packages/pip/_vendor/rich/_pick.py	/^def pic
 pick_bool	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/_pick.py	/^def pick_bool(*values: Optional[bool]) -> bool:$/;"	f	typeref:typename:bool
 pick_first	.venv/lib/python3.12/site-packages/pip/_vendor/rich/style.py	/^    def pick_first(cls, *values: Optional[StyleType]) -> StyleType:$/;"	m	class:Style	typeref:typename:StyleType
 pick_first	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/style.py	/^    def pick_first(cls, *values: Optional[StyleType]) -> StyleType:$/;"	m	class:Style	typeref:typename:StyleType
+pick_server	hive/scheduler/picker.py	/^def pick_server(servers):$/;"	f
 pick_unit_and_suffix	.venv/lib/python3.12/site-packages/pip/_vendor/rich/filesize.py	/^def pick_unit_and_suffix(size: int, suffixes: List[str], base: int) -> Tuple[int, str]:$/;"	f	typeref:typename:Tuple[int,str]
 pick_unit_and_suffix	.venv/lib64/python3.12/site-packages/pip/_vendor/rich/filesize.py	/^def pick_unit_and_suffix(size: int, suffixes: List[str], base: int) -> Tuple[int, str]:$/;"	f	typeref:typename:Tuple[int,str]
 pil_available	.venv/lib/python3.12/site-packages/pip/_vendor/pygments/formatters/img.py	/^    pil_available = False$/;"	v
@@ -36969,6 +36971,7 @@ test_dispatcher_run_once	tests/unit/test_dispatcher.py	/^def test_dispatcher_run
 test_dummy_executor	tests/unit/test_dummy_executor.py	/^def test_dummy_executor():$/;"	f
 test_job_roundtrip	tests/test_job.py	/^def test_job_roundtrip() -> None:$/;"	f	typeref:typename:None
 test_manifest_generation	tests/unit/test_manifest.py	/^def test_manifest_generation():$/;"	f
+test_pick_first_enabled_server	tests/unit/test_picker.py	/^def test_pick_first_enabled_server():$/;"	f
 test_remote_worker_on_first_server	tests/integration/test_remote_worker.py	/^def test_remote_worker_on_first_server() -> None:$/;"	f	typeref:typename:None
 test_requires	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
 test_requires	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
