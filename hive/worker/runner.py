@@ -11,6 +11,7 @@ from hive.executors.dummy import DummyExecutor
 from hive.executors.comfy import ComfyExecutor
 
 
+
 def load_manifest(job_dir: Path) -> dict:
     manifest_path = job_dir / "manifest.json"
 
