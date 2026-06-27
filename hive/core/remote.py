@@ -8,6 +8,20 @@ class RemoteError(RuntimeError):
     pass
 
 
+def copy_from(
+    local: str,
+    alias: str,
+    remote: str,
+) -> None:
+    run_local(
+        [
+            "rsync",
+            "-az",
+            f"{alias}:{remote}",
+            local,
+        ]
+    )
+
 def run_local(
     args: list[str],
     *,
@@ -65,20 +79,6 @@ def copy_to(
         ]
     )
 
-
-def copy_from(
-    alias: str,
-    remote: str,
-    local: str | Path,
-) -> None:
-    run_local(
-        [
-            "rsync",
-            "-az",
-            f"{alias}:{remote}",
-            str(local),
-        ]
-    )
 
 
 def shell_quote(value: str) -> str:

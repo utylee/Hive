@@ -36972,6 +36972,7 @@ test_dummy_executor	tests/unit/test_dummy_executor.py	/^def test_dummy_executor(
 test_job_roundtrip	tests/test_job.py	/^def test_job_roundtrip() -> None:$/;"	f	typeref:typename:None
 test_manifest_generation	tests/unit/test_manifest.py	/^def test_manifest_generation():$/;"	f
 test_pick_first_enabled_server	tests/unit/test_picker.py	/^def test_pick_first_enabled_server():$/;"	f
+test_remote_copy_from	tests/integration/test_remote_copy_from.py	/^def test_remote_copy_from() -> None:$/;"	f	typeref:typename:None
 test_remote_worker_on_first_server	tests/integration/test_remote_worker.py	/^def test_remote_worker_on_first_server() -> None:$/;"	f	typeref:typename:None
 test_requires	.venv/lib/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
 test_requires	.venv/lib64/python3.12/site-packages/pip/_vendor/distlib/database.py	/^    def test_requires(self):$/;"	m	class:Distribution
