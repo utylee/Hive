@@ -55,10 +55,10 @@ class ComfyClient:
 
     def _history(
         self,
-        prompt_id: str,
+        prompt: Prompt,
     ) -> dict[str, Any]:
         response = self.session.get(
-            f"{self.base_url}/history/{prompt_id}",
+            f"{self.base_url}/history/{prompt.id}",
             timeout=30,
         )
 
@@ -72,25 +72,24 @@ class ComfyClient:
         poll_interval: float = 1.0,
         timeout: float = 300.0,
     ) -> None:
-        start = time.time()
+        start = time.monotonic()
 
         while True:
-            history = self._history(prompt.id)
+            history = self._history(prompt)
 
             job = history.get(prompt.id)
 
-            # 아직 결과가 없으면 계속 기다림
-            if job is None:
-                pass
-            else:
-                # ComfyUI completed 구조 가정
-                status = job.get("status", {})
-                if status.get("completed", False):
+            if job is not None:
+                status = job["status"]
+
+                if status["completed"]:
                     return
 
-            if time.time() - start > timeout:
+            if time.monotonic() - start > timeout:
                 raise TimeoutError(
-                    f"Comfy job timeout: {prompt.id}"
+                    f"Timed out waiting for prompt {prompt.id}"
                 )
 
             time.sleep(poll_interval)
+
+
