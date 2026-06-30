@@ -49,3 +49,16 @@ class ComfyClient:
         response.raise_for_status()
 
         return response.json()
+
+    def _history(
+        self,
+        prompt_id: str,
+    ) -> dict[str, Any]:
+        response = self.session.get(
+            f"{self.base_url}/history/{prompt_id}",
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
