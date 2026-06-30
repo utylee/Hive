@@ -2,26 +2,24 @@ from hive.comfy.client import ComfyClient
 
 
 class DummyResponse:
-    def raise_for_status(self):
+    def raise_for_status(self) -> None:
         pass
 
-    def json(self):
+    def json(self) -> dict:
         return {
             "prompt_id": "abc123",
         }
 
 
-def test_submit(monkeypatch):
-    def fake_post(self, *args, **kwargs):
+class DummySession:
+    def post(self, *args, **kwargs):
         return DummyResponse()
 
-    monkeypatch.setattr(
-        "requests.Session.post",
-        fake_post,
-    )
 
+def test_submit() -> None:
     client = ComfyClient(
-        "http://localhost:8188/"
+        "http://localhost:8188/",
+        session=DummySession(),
     )
 
     prompt_id = client.submit(

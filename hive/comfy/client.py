@@ -6,9 +6,13 @@ import requests
 
 
 class ComfyClient:
-    def __init__(self, base_url: str):
+    def __init__(
+        self,
+        base_url: str,
+        session: requests.Session | None = None,
+    ) -> None:
         self.base_url = base_url.rstrip("/")
-        self.session = requests.Session()
+        self.session = session or requests.Session()
 
     def submit(
         self,
@@ -27,3 +31,16 @@ class ComfyClient:
         data = response.json()
 
         return data["prompt_id"]
+
+    def history(
+        self,
+        prompt_id: str,
+    ) -> dict[str, Any]:
+        response = self.session.get(
+            f"{self.base_url}/history/{prompt_id}",
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
