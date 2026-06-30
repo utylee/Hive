@@ -12,20 +12,24 @@ class DummyResponse:
 
 
 def test_submit(monkeypatch):
-    def fake_post(*args, **kwargs):
+    def fake_post(self, *args, **kwargs):
         return DummyResponse()
 
     monkeypatch.setattr(
-        "requests.post",
+        "requests.Session.post",
         fake_post,
     )
 
     client = ComfyClient(
-        "http://localhost:8188"
+        "http://localhost:8188/"
     )
 
     prompt_id = client.submit(
-        {"1": {"class_type": "EmptyLatentImage"}}
+        {
+            "1": {
+                "class_type": "EmptyLatentImage",
+            }
+        }
     )
 
     assert prompt_id == "abc123"

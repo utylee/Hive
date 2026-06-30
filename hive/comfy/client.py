@@ -8,9 +8,13 @@ import requests
 class ComfyClient:
     def __init__(self, base_url: str):
         self.base_url = base_url.rstrip("/")
+        self.session = requests.Session()
 
-    def submit(self, workflow: dict[str, Any]) -> str:
-        response = requests.post(
+    def submit(
+        self,
+        workflow: dict[str, Any],
+    ) -> str:
+        response = self.session.post(
             f"{self.base_url}/prompt",
             json={
                 "prompt": workflow,
