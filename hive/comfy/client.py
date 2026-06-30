@@ -4,6 +4,8 @@ from typing import Any
 
 import requests
 
+from hive.comfy.models import Prompt
+
 
 class ComfyClient:
     def __init__(
@@ -30,7 +32,10 @@ class ComfyClient:
 
         data = response.json()
 
-        return data["prompt_id"]
+        # return data["prompt_id"]
+        return Prompt(
+            id=data["prompt_id"],
+        )
 
     def history(
         self,

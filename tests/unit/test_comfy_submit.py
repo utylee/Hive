@@ -22,7 +22,7 @@ def test_submit() -> None:
         session=DummySession(),
     )
 
-    prompt_id = client.submit(
+    prompt = client.submit(
         {
             "1": {
                 "class_type": "EmptyLatentImage",
@@ -30,4 +30,5 @@ def test_submit() -> None:
         }
     )
 
-    assert prompt_id == "abc123"
+
+    assert prompt.id == "abc123"
