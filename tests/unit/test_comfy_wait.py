@@ -40,7 +40,8 @@ def test_wait() -> None:
         session=DummySession(),
     )
 
-    prompt = Prompt(id="job1")
+    # prompt = Prompt(id="job1")
+    prompt = Prompt(id="job1", client=client)
 
     client.wait(
         prompt,
