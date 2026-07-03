@@ -1,3 +1,5 @@
+import pytest
+
 from hive.runtime.worker import Worker
 from hive.runtime.worker_pool import WorkerPool
 
@@ -22,11 +24,17 @@ def test_worker_pool_acquire() -> None:
 
 
 def test_empty_worker_pool() -> None:
-    pool = WorkerPool([])
+    with pytest.raises(ValueError):
+        WorkerPool([])
 
-    try:
-        pool.acquire()
-    except RuntimeError:
-        return
 
-    assert False
+def test_worker_pool_round_robin() -> None:
+    worker1 = Worker(DummyTransport())
+    worker2 = Worker(DummyTransport())
+
+    pool = WorkerPool([worker1, worker2])
+
+    assert pool.acquire() is worker1
+    assert pool.acquire() is worker2
+    assert pool.acquire() is worker1
+    assert pool.acquire() is worker2
