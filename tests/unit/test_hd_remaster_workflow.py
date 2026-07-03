@@ -1,90 +1,40 @@
-from __future__ import annotations
-
 from pathlib import Path
+from unittest.mock import patch
 
 from hive.runtime.task import Task
+from hive.workflows.hd_remaster import HDRemasterWorkflow
 from hive.media.splitter import MovieSplitter
-from hive.media.probe import MovieProbe
 
 
-class HDRemasterWorkflow:
-    def __init__(self) -> None:
-        self.probe = MovieProbe()
-        self.splitter = MovieSplitter()
+def test_hd_remaster_workflow() -> None:
+    workflow = HDRemasterWorkflow()
 
-    def plan(
-        self,
-        source: Path,
-    ) -> list[Task]:
-        duration = self.probe.duration(source)
+    with patch.object(workflow.probe, "duration", return_value=25):
+        tasks = workflow.plan(Path("movie.mp4"))
 
-        segments = self.splitter.split(
-            duration=duration,
-            segment_length=10,
-        )
+    assert len(tasks) == 3
+    assert isinstance(tasks[0], Task)
 
-        tasks: list[Task] = []
+    assert tasks[0].command[0] == "ffmpeg"
+    assert tasks[0].inputs == [Path("movie.mp4")]
+    assert tasks[0].outputs == [Path("segment_0000.mp4")]
 
-        for segment in segments:
-            tasks.append(
-                Task(
-                    command=[
-                        "echo",
-                        str(segment.index),
-                    ],
-                )
-            )
-
-        return tasks
+    assert tasks[1].outputs == [Path("segment_0001.mp4")]
+    assert tasks[2].outputs == [Path("segment_0002.mp4")]
 
 
-# from pathlib import Path
+def test_split() -> None:
+    splitter = MovieSplitter()
 
-# from hive.runtime.task import Task
-# from hive.workflows.hd_remaster import HDRemasterWorkflow
-# from hive.workflows.hd_remaster.splitter import MovieSplitter
+    segments = splitter.split(
+        duration=25,
+        segment_length=10,
+    )
+
+    assert len(segments) == 3
+    assert segments[0].start == 0
+    assert segments[1].start == 10
+    assert segments[2].start == 20
+    assert segments[2].duration == 5
 
 
-# def test_hd_remaster_workflow() -> None:
-#     workflow = HDRemasterWorkflow()
-
-#     tasks = workflow.plan(Path("movie.mp4"))
-
-#     assert len(tasks) == 3
-#     assert isinstance(tasks[0], Task)
-#     # assert tasks[0].command == [
-#     #     "echo",
-#     #     "movie.mp4",
-#     # ]
-
-#     assert tasks[0].command == [
-#         "echo",
-#         "0",
-#     ]
-
-#     assert tasks[1].command == [
-#         "echo",
-#         "1",
-#     ]
-
-#     assert tasks[2].command == [
-#         "echo",
-#         "2",
-#     ]
-
-# def test_split() -> None:
-
-#     splitter = MovieSplitter()
-
-#     segments = splitter.split(
-#         duration=25,
-#         segment_length=10,
-#     )
-
-#     assert len(segments) == 3
-
-#     assert segments[0].start == 0
-#     assert segments[1].start == 10
-#     assert segments[2].start == 20
-
-#     assert segments[2].duration == 5

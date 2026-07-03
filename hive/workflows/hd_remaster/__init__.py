@@ -26,11 +26,28 @@ class HDRemasterWorkflow:
         tasks: list[Task] = []
 
         for segment in segments:
+            output = Path(
+                f"segment_{segment.index:04d}.mp4"
+            )
+
             tasks.append(
                 Task(
                     command=[
-                        "echo",
-                        str(segment.index),
+                        "ffmpeg",
+                        "-y",
+                        "-ss",
+                        str(segment.start),
+                        "-t",
+                        str(segment.duration),
+                        "-i",
+                        str(source),
+                        str(output),
+                    ],
+                    inputs=[
+                        source,
+                    ],
+                    outputs=[
+                        output,
                     ],
                 )
             )
