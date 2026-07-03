@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from hive.runtime.task import Task
-from hive.workflows.hd_remaster.probe import MovieProbe
-from hive.workflows.hd_remaster.splitter import MovieSplitter
+from hive.media.splitter import MovieSplitter
+from hive.media.probe import MovieProbe
 
 
 class HDRemasterWorkflow:
