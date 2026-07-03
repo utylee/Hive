@@ -2,6 +2,7 @@ from pathlib import Path
 
 from hive.runtime.task import Task
 from hive.workflows.hd_remaster import HDRemasterWorkflow
+from hive.workflows.hd_remaster.splitter import MovieSplitter
 
 
 def test_hd_remaster_workflow() -> None:
@@ -15,3 +16,20 @@ def test_hd_remaster_workflow() -> None:
         "echo",
         "movie.mp4",
     ]
+
+def test_split() -> None:
+
+    splitter = MovieSplitter()
+
+    segments = splitter.split(
+        duration=25,
+        segment_length=10,
+    )
+
+    assert len(segments) == 3
+
+    assert segments[0].start == 0
+    assert segments[1].start == 10
+    assert segments[2].start == 20
+
+    assert segments[2].duration == 5
