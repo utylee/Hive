@@ -10,11 +10,26 @@ def test_hd_remaster_workflow() -> None:
 
     tasks = workflow.plan(Path("movie.mp4"))
 
-    assert len(tasks) == 1
+    assert len(tasks) == 3
     assert isinstance(tasks[0], Task)
+    # assert tasks[0].command == [
+    #     "echo",
+    #     "movie.mp4",
+    # ]
+
     assert tasks[0].command == [
         "echo",
-        "movie.mp4",
+        "0",
+    ]
+
+    assert tasks[1].command == [
+        "echo",
+        "1",
+    ]
+
+    assert tasks[2].command == [
+        "echo",
+        "2",
     ]
 
 def test_split() -> None:
