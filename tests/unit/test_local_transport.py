@@ -4,28 +4,28 @@ from hive.transport.local import LocalTransport
 
 
 def test_local_transport_upload_download_execute(tmp_path: Path) -> None:
-    transport = LocalTransport()
+    workspace = tmp_path / "workspace"
+
+    transport = LocalTransport(
+        workspace=workspace,
+    )
 
     source = tmp_path / "source.txt"
-    uploaded = tmp_path / "remote" / "input.txt"
     downloaded = tmp_path / "downloaded.txt"
 
     source.write_text("hello", encoding="utf-8")
 
-    transport.upload(source, str(uploaded))
+    transport.upload(source)
+
+    uploaded = workspace / "input" / "source.txt"
 
     assert uploaded.read_text(encoding="utf-8") == "hello"
 
-    output = tmp_path / "remote" / "output.txt"
+    output = workspace / "output" / "downloaded.txt"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text("done", encoding="utf-8")
 
-    transport.execute(
-        [
-            "python",
-            "-c",
-            f"from pathlib import Path; Path({str(output)!r}).write_text('done', encoding='utf-8')",
-        ]
-    )
-
-    transport.download(str(output), downloaded)
+    transport.download(downloaded)
 
     assert downloaded.read_text(encoding="utf-8") == "done"
+

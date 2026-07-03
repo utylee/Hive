@@ -35,7 +35,7 @@ class SSHTransport:
     ) -> None:
         if cwd is not None:
             raise NotImplementedError(
-                "cwd is not supported yet."
+                "cwd is not supported."
             )
 
         subprocess.run(
