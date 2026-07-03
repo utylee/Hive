@@ -15,9 +15,21 @@ class DummyWorker:
         self.tasks.append(task)
 
 
+class DummyWorkerPool:
+    def __init__(
+        self,
+        worker: DummyWorker,
+    ) -> None:
+        self.worker = worker
+
+    def acquire(self) -> DummyWorker:
+        return self.worker
+
+
 def test_executor_submit() -> None:
     worker = DummyWorker()
-    executor = Executor(worker)
+    pool = DummyWorkerPool(worker)
+    executor = Executor(pool)
 
     task = Task(
         command=["echo", "hello"],
@@ -28,3 +40,18 @@ def test_executor_submit() -> None:
     executor.submit(task)
 
     assert worker.tasks == [task]
+
+
+def test_executor_map() -> None:
+    worker = DummyWorker()
+    pool = DummyWorkerPool(worker)
+    executor = Executor(pool)
+
+    tasks = [
+        Task(command=["echo", "one"]),
+        Task(command=["echo", "two"]),
+    ]
+
+    executor.map(tasks)
+
+    assert worker.tasks == tasks
