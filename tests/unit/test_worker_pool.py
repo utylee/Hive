@@ -13,9 +13,20 @@ class DummyTransport:
         pass
 
 
-def test_worker_pool_acquire():
+def test_worker_pool_acquire() -> None:
     worker = Worker(DummyTransport())
 
     pool = WorkerPool([worker])
 
     assert pool.acquire() is worker
+
+
+def test_empty_worker_pool() -> None:
+    pool = WorkerPool([])
+
+    try:
+        pool.acquire()
+    except RuntimeError:
+        return
+
+    assert False
