@@ -6,14 +6,25 @@ from pathlib import Path
 
 
 class LocalTransport:
+    def __init__(
+        self,
+        workspace: Path,
+    ) -> None:
+        self.workspace = workspace
+
     def upload(
         self,
         source: Path,
-        destination: str,
     ) -> None:
-        dest = Path(destination)
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, dest)
+        destination = self.workspace / "input" / source.name
+
+        destination.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        shutil.copy2(source, destination)
+
 
     def execute(
         self,
@@ -29,11 +40,17 @@ class LocalTransport:
             check=True,
         )
 
+
     def download(
         self,
-        source: str,
         destination: Path,
     ) -> None:
-        src = Path(source)
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src, destination)
+        source = self.workspace / "output" / destination.name
+
+        destination.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        shutil.copy2(source, destination)
+
