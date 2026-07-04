@@ -35,5 +35,10 @@ workdir/
 logs/
 tmp/
 
+#outputs
+outputs
+.hive*
+*.mp4
+
 
 tags
