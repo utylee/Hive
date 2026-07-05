@@ -15,9 +15,11 @@ def test_local_transport_upload_download_execute(tmp_path: Path) -> None:
 
     source.write_text("hello", encoding="utf-8")
 
-    transport.upload(source)
+    # transport.upload(source)
+    transport.upload(source, "source.txt")
 
-    uploaded = workspace / "input" / "source.txt"
+    # uploaded = workspace / "input" / "source.txt"
+    uploaded = workspace / "source.txt"
 
     assert uploaded.read_text(encoding="utf-8") == "hello"
 
@@ -25,7 +27,11 @@ def test_local_transport_upload_download_execute(tmp_path: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("done", encoding="utf-8")
 
-    transport.download(downloaded)
+    # transport.download(downloaded)
+    transport.download(
+    "output/downloaded.txt",
+    downloaded,
+)
 
     assert downloaded.read_text(encoding="utf-8") == "done"
 
