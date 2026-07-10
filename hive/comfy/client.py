@@ -41,7 +41,6 @@ class ComfyClient:
 
         return response.content
 
-
     def submit(
         self,
         workflow: dict[str, Any],
@@ -54,14 +53,59 @@ class ComfyClient:
             timeout=30,
         )
 
-        response.raise_for_status()
+        if not response.ok:
+            raise RuntimeError(
+                f"Comfy submit failed ({response.status_code})\n"
+                f"{response.text}"
+            )
 
         data = response.json()
+
+        if "prompt_id" not in data:
+            raise RuntimeError(
+                f"Comfy submit returned no prompt_id\n"
+                f"{data}"
+            )
 
         return Prompt(
             id=data["prompt_id"],
             client=self,
         )
+
+
+    # def submit(
+    #     self,
+    #     workflow: dict[str, Any],
+    # ) -> Prompt:
+    #     # response = self.session.post(
+    #     #     f"{self.base_url}/prompt",
+    #     #     json={
+    #     #         "prompt": workflow,
+    #     #     },
+    #     #     timeout=30,
+    #     # )
+
+    #     response = requests.get(
+    #         "http://192.168.1.122:8188/system_stats",
+    #         timeout=10,
+    #     )
+
+    #     print(response.status_code)
+    #     print(response.text[:1000])
+
+    #     # response.raise_for_status()
+    #     if not response.ok:
+    #         raise RuntimeError(
+    #             f"Comfy submit failed ({response.status_code})\n"
+    #             f"{response.text}"
+    #         )
+
+    #     data = response.json()
+
+    #     return Prompt(
+    #         id=data["prompt_id"],
+    #         client=self,
+    #     )
 
     def _history(
         self,
