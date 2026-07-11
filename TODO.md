@@ -2,41 +2,30 @@
 
 ## 목표
 
-Comfy API Workflow 제출 성공.
+입력 segment와 출력 이름을 Comfy API workflow에 주입한다.
 
 ---
 
 순서
 
-- [ ] API Workflow JSON 준비
-- [ ] submit()
-- [ ] prompt_id 확인
-- [ ] wait()
-- [ ] outputs()
-- [ ] 첫 이미지 download()
+- [ ] 입력 영상 경로 치환
+- [ ] 출력 filename prefix 치환
+- [ ] queue_nonce 자동 변경
+- [ ] 단일 segment E2E 실행
+- [ ] 결과 MP4 다운로드 확인
+- [ ] 테스트
+- [ ] 커밋
 
 ---
 
 다음
 
-- [ ] ComfyExecutor 구현
+- [ ] ComfyExecutor 실제 구현
 
 ---
 
 그 다음
 
-- [ ] Workflow JSON 자동 수정
-- [ ] 입력 파일명 자동 치환
-- [ ] 출력 자동 다운로드
-
----
-
-그 다음
-
-- [ ] Runtime + ComfyExecutor 연결
-
----
-
-그 다음
-
-- [ ] 여러 Worker 동시 실행
+- [ ] Runtime과 ComfyExecutor 연결
+- [ ] 여러 Worker에 segment 분산 실행
+- [ ] 결과 segment 병합

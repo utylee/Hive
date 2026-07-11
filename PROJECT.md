@@ -84,19 +84,30 @@ Worker는 Transport 종류를 알 필요가 없다.
 - [x] history()
 - [x] outputs()
 - [x] download()
+- [x] API workflow submit
+- [x] meta batch 전체 완료 대기
+- [x] image outputs
+- [x] video outputs (`gifs`)
+- [x] video download
+- [x] Comfy E2E 성공
 
-Prompt
+### Prompt
 
 - [x] wait()
 - [x] outputs()
 
-ImageOutput
+### ImageOutput
 
 - [x] download()
 
-Outputs
+### VideoOutput
+
+- [x] download()
+
+### Outputs
 
 - [x] images
+- [x] videos
 
 ---
 
@@ -116,116 +127,125 @@ Outputs
 
 완료.
 
-동작
+동작 흐름:
 
+```text
 movie.mp4
-
-↓
-
+  ↓
 Workflow.plan()
-
-↓
-
+  ↓
 Task 생성
-
-↓
-
+  ↓
 Executor.map()
-
-↓
-
+  ↓
 Worker
-
-↓
-
+  ↓
 Transport
-
-↓
-
+  ↓
 ffmpeg split
-
-↓
-
+  ↓
 segment 다운로드
-
-↓
-
+  ↓
 outputs/
+```
 
-동작 확인 완료.
+Local, SSH 모두 성공.
 
-Local
+## comfy_client.py
 
-SSH
+완료.
 
-모두 성공.
+동작 흐름:
+
+```text
+API workflow JSON 로드
+  ↓
+queue_nonce 변경
+  ↓
+ComfyClient.submit()
+  ↓
+meta batch 전체 완료까지 wait()
+  ↓
+Prompt.outputs()
+  ↓
+VideoOutput.download()
+  ↓
+outputs/comfy/
+```
 
 ---
 
 ## Repository Structure
 
+```text
 hive/
 ├── comfy/
-│ ├── client.py
-│ ├── models.py
-│ └── outputs.py
+│   ├── client.py
+│   ├── models.py
+│   └── outputs.py
 ├── executors/
-│ └── comfy.py
+│   └── comfy.py
 ├── runtime/
-│ ├── executor.py
-│ ├── task.py
-│ ├── worker.py
-│ └── worker_pool.py
+│   ├── executor.py
+│   ├── task.py
+│   ├── worker.py
+│   └── worker_pool.py
 ├── transport/
-│ ├── local.py
-│ └── ssh.py
+│   ├── local.py
+│   └── ssh.py
 ├── workflows/
-│ └── hd_remaster/
+│   └── hd_remaster/
 └── examples/
-├── hd_remaster.py
-├── comfy_client.py
-└── workflows/
+    ├── hd_remaster.py
+    ├── comfy_client.py
+    └── workflows/
+```
 
+## Important APIs
+
+```python
 LocalTransport(workspace: Path)
 SSHTransport(host: str, workspace: Path)
 
 upload(source: Path, destination: str) -> None
-execute(command: list[str], \*, cwd=None, timeout=None) -> None
+execute(command: list[str], *, cwd=None, timeout=None) -> None
 download(source: str, destination: Path) -> None
+```
+
+```python
+ComfyClient.submit(workflow) -> Prompt
+Prompt.wait() -> Prompt
+Prompt.outputs() -> Outputs
+ImageOutput.download() -> bytes
+VideoOutput.download() -> bytes
+```
 
 ---
 
 # Architecture
 
+```text
 Dispatcher
-
 ├── Runtime
-│
 ├── SSH
-│ ├── upload
-│ └── download
-│
+│   ├── upload
+│   └── download
 └── HTTP
-├── submit
-├── wait
-├── history
-└── outputs
+    ├── submit
+    ├── wait
+    ├── history
+    └── outputs
+```
 
-SSH는
+SSH는 파일 전송에 사용한다.
 
-파일 전송
-
-HTTP는
-
-Comfy 실행
+HTTP는 Comfy 실행에 사용한다.
 
 둘은 분리한다.
 
 ---
 
 # Design Rules
-
-반드시 지킨다.
 
 - Runtime은 당분간 수정하지 않는다.
 - 작은 커밋으로 진행한다.
@@ -240,28 +260,25 @@ Comfy 실행
 
 # Current Issue
 
-Comfy API Workflow 제출 진행 중.
+현재 Comfy workflow는 API JSON에 저장된 입력 경로와 출력 설정을 그대로 사용한다.
 
-현재 UI Workflow JSON은 확인.
+아직 Hive가 segment별로 다음 값을 자동 주입하지 않는다.
 
-API Workflow JSON으로 전환 필요.
+- 입력 영상 경로
+- 출력 filename prefix
+- queue_nonce
 
 ---
 
 # Next Goal
 
-Comfy API Workflow submit 성공.
+단일 segment 정보를 Comfy API workflow에 주입한다.
 
-prompt_id 수신.
+- 입력 영상 경로 치환
+- 출력 filename prefix 치환
+- queue_nonce 자동 변경
+- submit
+- meta batch 전체 완료 대기
+- 결과 MP4 다운로드
 
-wait()
-
-outputs()
-
-다운로드.
-
-E2E 성공.
-
-그 후
-
-ComfyExecutor 구현.
+그 후 ComfyExecutor를 실제 구현한다.
