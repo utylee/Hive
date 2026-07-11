@@ -103,3 +103,9 @@
 - create_manifest()에 optional parameters 추가
 - Dispatcher가 parameters를 manifest에 전달
 - 관련 테스트 통과
+
+---
+
+- 원본 source를 job_dir 안으로 복사하도록 수정
+- 원격 worker에서도 동일 상대경로 사용 가능
+- dispatcher/manifest 테스트 통과

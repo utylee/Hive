@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import shutil
+
 from hive.dispatcher.manifest import create_manifest, save_manifest
 from hive.dispatcher.scanner import Scanner
 from hive.dispatcher.workdir import WorkDir
@@ -31,25 +33,27 @@ class Dispatcher:
         created = 0
 
         for source in self.scanner.scan():
+            staged_source = Path("input") / source.name
+
             manifest = create_manifest(
                 project=self.project,
                 job_type=self.job_type,
-                source=source,
+                source=staged_source,
                 parameters=self.parameters,
             )
 
-            # manifest = create_manifest(
-            #     project=self.project,
-            #     job_type=self.job_type,
-            #     source=source,
-            # )
-
             job_dir = self.workdir.create(manifest["id"])
+
+            shutil.copy2(
+                source,
+                job_dir / staged_source,
+            )
 
             save_manifest(
                 manifest,
                 job_dir / "manifest.json",
             )
+
             server = pick_server(self.servers)
 
             result = dispatch_remote_job(
