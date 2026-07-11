@@ -120,6 +120,26 @@ class ComfyClient:
 
         return response.json()
 
+    def _queue(self) -> dict[str, Any]:
+        response = self.session.get(
+            f"{self.base_url}/queue",
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+    def _all_history(self) -> dict[str, Any]:
+        response = self.session.get(
+            f"{self.base_url}/history",
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
     def wait(
         self,
         prompt: Prompt,
@@ -127,18 +147,47 @@ class ComfyClient:
         timeout: float = 300.0,
     ) -> Prompt:
         start = time.monotonic()
+        create_time: int | None = None
 
         while True:
             history = self._history(prompt.id)
-
             job = history.get(prompt.id)
 
             if job is not None:
+                create_time = job["prompt"][3]["create_time"]
+
                 status = job["status"]
 
                 if status["completed"]:
-                    prompt.history = job
-                    return prompt
+                    queue = self._queue()
+
+                    queued = (
+                        queue["queue_running"]
+                        + queue["queue_pending"]
+                    )
+
+                    same_batch_running = any(
+                        item[3].get("create_time") == create_time
+                        for item in queued
+                    )
+
+                    if not same_batch_running:
+                        histories = self._all_history()
+
+                        matching_jobs = [
+                            candidate
+                            for candidate in histories.values()
+                            if candidate["prompt"][3].get("create_time")
+                            == create_time
+                        ]
+
+                        prompt.history = (
+                            matching_jobs[-1]
+                            if matching_jobs
+                            else job
+                        )
+
+                        return prompt
 
             if time.monotonic() - start > timeout:
                 raise TimeoutError(
@@ -146,6 +195,33 @@ class ComfyClient:
                 )
 
             time.sleep(poll_interval)
+
+    # def wait(
+    #     self,
+    #     prompt: Prompt,
+    #     poll_interval: float = 1.0,
+    #     timeout: float = 300.0,
+    # ) -> Prompt:
+    #     start = time.monotonic()
+
+    #     while True:
+    #         history = self._history(prompt.id)
+
+    #         job = history.get(prompt.id)
+
+    #         if job is not None:
+    #             status = job["status"]
+
+    #             if status["completed"]:
+    #                 prompt.history = job
+    #                 return prompt
+
+    #         if time.monotonic() - start > timeout:
+    #             raise TimeoutError(
+    #                 f"Timed out waiting for prompt {prompt.id}"
+    #             )
+
+    #         time.sleep(poll_interval)
 
     def history(
         self,

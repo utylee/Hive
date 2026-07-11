@@ -2,6 +2,9 @@ from hive.comfy.client import ComfyClient
 
 
 class DummyResponse:
+    ok = True
+    status_code = 200
+    text = ""
     def raise_for_status(self) -> None:
         pass
 

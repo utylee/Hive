@@ -1,0 +1,245 @@
+{
+  "2": {
+    "inputs": {
+      "model_name": "RealESRGAN_x2plus.pth"
+    },
+    "class_type": "UpscaleModelLoader",
+    "_meta": {
+      "title": "업스케일 모델 로드"
+    }
+  },
+  "3": {
+    "inputs": {
+      "upscale_model": [
+        "2",
+        0
+      ],
+      "image": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel",
+    "_meta": {
+      "title": "모델을 사용한 이미지 확대"
+    }
+  },
+  "4": {
+    "inputs": {
+      "video": [
+        "75",
+        0
+      ],
+      "force_rate": 0,
+      "custom_width": 0,
+      "custom_height": 0,
+      "frame_load_cap": 0,
+      "skip_first_frames": 0,
+      "select_every_nth": 1,
+      "format": "None",
+      "meta_batch": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "VHS_LoadVideoPath",
+    "_meta": {
+      "title": "Load Video (Path) 🎥🅥🅗🅢"
+    }
+  },
+  "5": {
+    "inputs": {
+      "video_info": [
+        "4",
+        3
+      ]
+    },
+    "class_type": "VHS_VideoInfo",
+    "_meta": {
+      "title": "Video Info 🎥🅥🅗🅢"
+    }
+  },
+  "6": {
+    "inputs": {
+      "frame_rate": [
+        "5",
+        0
+      ],
+      "loop_count": 0,
+      "filename_prefix": [
+        "75",
+        1
+      ],
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 14,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "60",
+        0
+      ],
+      "audio": [
+        "4",
+        2
+      ],
+      "meta_batch": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "7": {
+    "inputs": {
+      "frames_per_batch": 16,
+      "count": 651
+    },
+    "class_type": "VHS_BatchManager",
+    "_meta": {
+      "title": "Meta Batch Manager 🎥🅥🅗🅢"
+    }
+  },
+  "31": {
+    "inputs": {
+      "radius": 3,
+      "amount": 0.2,
+      "images": [
+        "47",
+        0
+      ]
+    },
+    "class_type": "LocalDetailEnhance",
+    "_meta": {
+      "title": "Local Detail Enhance"
+    }
+  },
+  "47": {
+    "inputs": {
+      "facedetection": "retinaface_resnet50",
+      "model": "GFPGANv1.4.pth",
+      "visibility": 0.5,
+      "codeformer_weight": 0.5,
+      "face_selection": "all",
+      "sort_by": "area",
+      "reverse_order": false,
+      "take_start": 0,
+      "take_count": 1,
+      "image": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "ReActorRestoreFaceAdvanced",
+    "_meta": {
+      "title": "Restore Face Advanced 🌌 ReActor"
+    }
+  },
+  "52": {
+    "inputs": {
+      "source": [
+        "75",
+        1
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "미리보기 아무거나"
+    }
+  },
+  "54": {
+    "inputs": {
+      "source": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "미리보기 아무거나"
+    }
+  },
+  "56": {
+    "inputs": {
+      "source": [
+        "75",
+        3
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "미리보기 아무거나"
+    }
+  },
+  "60": {
+    "inputs": {
+      "contrast": 1.06,
+      "brightness": 0.005,
+      "gamma": 1.01,
+      "saturation": 1.05,
+      "black_point": 0.01,
+      "image": [
+        "71",
+        0
+      ]
+    },
+    "class_type": "VHSColorRemaster",
+    "_meta": {
+      "title": "VHS Color Remaster"
+    }
+  },
+  "66": {
+    "inputs": {
+      "source": [
+        "75",
+        2
+      ]
+    },
+    "class_type": "PreviewAny",
+    "_meta": {
+      "title": "미리보기 아무거나"
+    }
+  },
+  "71": {
+    "inputs": {
+      "radius": 0.6,
+      "sigma": 1,
+      "amount": 0.12,
+      "threshold": 0.04,
+      "channel": "rgb",
+      "image": [
+        "31",
+        0
+      ]
+    },
+    "class_type": "ImageMagick Unsharp Mask",
+    "_meta": {
+      "title": "ImageMagick Unsharp Mask"
+    }
+  },
+  "75": {
+    "inputs": {
+      "batch_folder": "shiratori",
+      "output_folder": "/data/temp/ComfyUI/output/vhs_preclean",
+      "preset": "vhs_soft",
+      "skip_existing": false,
+      "overwrite_existing": true,
+      "reset_lock": false,
+      "force_advance": true,
+      "queue_nonce": 844441913,
+      "video_codec": "libx264",
+      "crf": 14,
+      "audio_mode": "copy",
+      "queue all remaining": null
+    },
+    "class_type": "VHSBatchPrecleanPro",
+    "_meta": {
+      "title": "VHS Batch Preclean Pro"
+    }
+  }
+}

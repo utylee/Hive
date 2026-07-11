@@ -3,7 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from hive.comfy.outputs import ImageOutput, Outputs
+
+from hive.comfy.outputs import ImageOutput, Outputs, VideoOutput
 
 if TYPE_CHECKING:
     from hive.comfy.client import ComfyClient
@@ -32,6 +33,17 @@ class Prompt:
                         filename=image["filename"],
                         subfolder=image.get("subfolder", ""),
                         type=image.get("type", "output"),
+                    )
+                )
+
+            for video in node.get("gifs", []):
+                result.videos.append(
+                    VideoOutput(
+                        client=self.client,
+                        filename=video["filename"],
+                        subfolder=video.get("subfolder", ""),
+                        type=video.get("type", "output"),
+                        format=video.get("format"),
                     )
                 )
 
