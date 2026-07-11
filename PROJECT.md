@@ -268,23 +268,16 @@ HTTP는 Comfy 실행에 사용한다.
 - Comfy submit
 - VHS meta batch 전체 완료 대기
 - 결과 MP4 다운로드
+- Hive 콘솔에서 worker, segment, meta batch 진행률, elapsed time 표시 성공
+- comfy_client.py가 실행 위치와 무관하게 workflow 경로를 찾도록 수정
 
 아직 남은 문제:
 
-- 진행률을 Hive 콘솔에서 확인할 수 없음
 - ComfyExecutor는 아직 Stub
 - 여러 segment를 여러 Worker에 분산 실행하지 않음
 
 ---
 
 # Next Goal
-
-Comfy 작업 진행률을 Hive에서 확인할 수 있게 한다.
-
-- 현재 실행 중인 worker 표시
-- 현재 segment 표시
-- meta batch 진행률 표시
-- elapsed time 표시
-- 완료/실패 상태 표시
 
 그 후 ComfyExecutor를 실제 구현한다.

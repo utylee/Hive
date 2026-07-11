@@ -87,3 +87,11 @@
 - 입력 파일명 기반으로 출력 파일명이 자동 결정되는 구조 확인.
 - 원격 ComfyUI 브라우저에서는 API 제출 작업의 meta batch 진행 표시가 보이지 않을 수 있음을 확인.
 - 향후 Hive 콘솔에서 worker, segment, meta batch 진행률, elapsed time, 완료/실패 상태를 표시할 필요가 있음.
+
+---
+
+### continued Segment E2E
+
+- ComfyClient.wait()에 on_progress 콜백 추가
+- VHS BatchManager의 count, frames_per_batch, requeue로 진행률 계산
+- 콘솔 한 줄 갱신 방식으로 진행률 표시 성공

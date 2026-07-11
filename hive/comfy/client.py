@@ -6,6 +6,8 @@ from pathlib import Path
 
 import requests
 
+from collections.abc import Callable
+
 from hive.comfy.models import Prompt
 from hive.comfy.outputs import ImageOutput
 
@@ -145,7 +147,16 @@ class ComfyClient:
         prompt: Prompt,
         poll_interval: float = 1.0,
         timeout: float = 300.0,
+        on_progress: Callable[[int, int, float], None] | None = None,
     ) -> Prompt:
+
+    # def wait(
+    #     self,
+    #     prompt: Prompt,
+    #     poll_interval: float = 1.0,
+    #     timeout: float = 300.0,
+    # ) -> Prompt:
+
         start = time.monotonic()
         create_time: int | None = None
 
@@ -165,6 +176,50 @@ class ComfyClient:
                         queue["queue_running"]
                         + queue["queue_pending"]
                     )
+
+                    matching_item = next(
+                        (
+                            item
+                            for item in queued
+                            if item[3].get("create_time") == create_time
+                        ),
+                        None,
+                    )
+
+                    if matching_item is not None and on_progress is not None:
+                        queued_workflow = matching_item[2]
+
+                        batch_node = next(
+                            (
+                                node
+                                for node in queued_workflow.values()
+                                if node.get("class_type")
+                                == "VHS_BatchManager"
+                            ),
+                            None,
+                        )
+
+                        if batch_node is not None:
+                            inputs = batch_node["inputs"]
+                            frame_count = inputs["count"]
+                            frames_per_batch = inputs["frames_per_batch"]
+                            current_batch = inputs.get("requeue", 1)
+
+                            total_batches = (
+                                frame_count + frames_per_batch - 1
+                            ) // frames_per_batch
+
+                            on_progress(
+                                current_batch,
+                                total_batches,
+                                time.monotonic() - start,
+                            )
+
+
+                    # queued = (
+                    #     queue["queue_running"]
+                    #     + queue["queue_pending"]
+                    # )
 
                     same_batch_running = any(
                         item[3].get("create_time") == create_time

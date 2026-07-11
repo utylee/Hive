@@ -12,8 +12,14 @@ import random
 
 
 def main() -> None:
+    workflow_path = (
+        Path(__file__).parent
+        / "workflows"
+        / "hd_remaster_rope_facerestore_api.json"
+    )
+
     workflow = json.loads(
-        Path("workflows/hd_remaster_rope_facerestore_api.json").read_text(
+        workflow_path.read_text(
             encoding="utf-8",
         )
     )
@@ -50,10 +56,32 @@ def main() -> None:
     print(f"submitted: {prompt.id}")
 
 
+    def show_progress(
+        current: int,
+        total: int,
+        elapsed: float,
+    ) -> None:
+        print(
+            f"\rm5  {segment.name}  "
+            f"batch {current}/{total}  "
+            f"elapsed {elapsed:0.0f}s",
+            end="",
+            flush=True,
+        )
+
     prompt = client.wait(
         prompt,
         timeout=3600,
+        on_progress=show_progress,
     )
+
+    print()
+
+    # prompt = client.wait(
+    #     prompt,
+    #     timeout=3600,
+    # )
+
     # prompt.wait()
 
     print("completed")
