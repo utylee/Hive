@@ -2,17 +2,17 @@
 
 ## 목표
 
-입력 segment와 출력 이름을 Comfy API workflow에 주입한다.
+Comfy 작업 진행률을 Hive 콘솔에서 확인할 수 있게 한다.
 
 ---
 
 순서
 
-- [ ] 입력 영상 경로 치환
-- [ ] 출력 filename prefix 치환
-- [ ] queue_nonce 자동 변경
-- [ ] 단일 segment E2E 실행
-- [ ] 결과 MP4 다운로드 확인
+- [ ] 현재 실행 중인 worker 표시
+- [ ] 현재 처리 중인 segment 표시
+- [ ] VHS meta batch 진행률 표시
+- [ ] elapsed time 표시
+- [ ] 완료/실패 상태 표시
 - [ ] 테스트
 - [ ] 커밋
 

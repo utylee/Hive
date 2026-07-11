@@ -260,25 +260,31 @@ HTTP는 Comfy 실행에 사용한다.
 
 # Current Issue
 
-현재 Comfy workflow는 API JSON에 저장된 입력 경로와 출력 설정을 그대로 사용한다.
+단일 segment 기준으로 다음 흐름은 동작 확인이 끝났다.
 
-아직 Hive가 segment별로 다음 값을 자동 주입하지 않는다.
+- 로컬 segment를 원격 Comfy input batch 폴더로 업로드
+- API workflow에 `batch_folder` 주입
+- `queue_nonce` 자동 변경
+- Comfy submit
+- VHS meta batch 전체 완료 대기
+- 결과 MP4 다운로드
 
-- 입력 영상 경로
-- 출력 filename prefix
-- queue_nonce
+아직 남은 문제:
+
+- 진행률을 Hive 콘솔에서 확인할 수 없음
+- ComfyExecutor는 아직 Stub
+- 여러 segment를 여러 Worker에 분산 실행하지 않음
 
 ---
 
 # Next Goal
 
-단일 segment 정보를 Comfy API workflow에 주입한다.
+Comfy 작업 진행률을 Hive에서 확인할 수 있게 한다.
 
-- 입력 영상 경로 치환
-- 출력 filename prefix 치환
-- queue_nonce 자동 변경
-- submit
-- meta batch 전체 완료 대기
-- 결과 MP4 다운로드
+- 현재 실행 중인 worker 표시
+- 현재 segment 표시
+- meta batch 진행률 표시
+- elapsed time 표시
+- 완료/실패 상태 표시
 
 그 후 ComfyExecutor를 실제 구현한다.

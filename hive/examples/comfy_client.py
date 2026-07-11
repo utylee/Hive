@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from hive.comfy.client import ComfyClient
+from hive.transport.ssh import SSHTransport
 
 import pprint
 import random
@@ -17,12 +18,33 @@ def main() -> None:
         )
     )
 
+    segment = Path("outputs/segment_0000.mp4")
+    batch_folder = "hive_test"
+
+    transport = SSHTransport(
+        host="m5",
+        workspace=Path(
+            "/data/temp/ComfyUI/input/batches"
+        ) / batch_folder,
+    )
+
+    transport.upload(
+        segment,
+        segment.name,
+    )
+
+    workflow["75"]["inputs"]["batch_folder"] = batch_folder
+    workflow["75"]["inputs"]["queue_nonce"] = random.randint(
+        0,
+        999_999_999,
+    )
+
     client = ComfyClient(
         "http://192.168.1.122:8188",
     )
 
-    workflow["75"]["inputs"]["queue_nonce"] = random.randint(0, 999_999_999)
-    # workflow["75"]["inputs"]["queue_nonce"] = int(time.time()) % 1_000_000_000
+    # workflow["75"]["inputs"]["queue_nonce"] = random.randint(0, 999_999_999)
+    # # workflow["75"]["inputs"]["queue_nonce"] = int(time.time()) % 1_000_000_000
 
     prompt = client.submit(workflow)
     print(f"submitted: {prompt.id}")

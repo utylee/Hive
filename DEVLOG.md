@@ -73,3 +73,17 @@
 - `/view`를 통해 최종 MP4 다운로드 성공.
 - `queue_nonce`를 매 실행 변경해 캐시 실행 방지.
 - `queue_nonce` 최대값이 `999999999`임을 확인하고 범위 내 랜덤값 사용.
+
+---
+
+### Single Segment E2E
+
+- 로컬 `segment_0000.mp4`를 SSHTransport로 원격 ComfyUI의 `input/batches/hive_test/`에 업로드.
+- API workflow의 `batch_folder`를 `hive_test`로 주입.
+- `queue_nonce`를 실행마다 범위 내 랜덤값으로 변경.
+- Comfy HTTP API로 workflow 제출.
+- VHS meta batch 재큐잉이 모두 끝날 때까지 대기.
+- 최종 MP4를 `/view`를 통해 로컬 `outputs/comfy/`로 다운로드.
+- 입력 파일명 기반으로 출력 파일명이 자동 결정되는 구조 확인.
+- 원격 ComfyUI 브라우저에서는 API 제출 작업의 meta batch 진행 표시가 보이지 않을 수 있음을 확인.
+- 향후 Hive 콘솔에서 worker, segment, meta batch 진행률, elapsed time, 완료/실패 상태를 표시할 필요가 있음.
