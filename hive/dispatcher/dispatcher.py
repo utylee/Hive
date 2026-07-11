@@ -17,6 +17,7 @@ class Dispatcher:
         project,
         job_type,
         servers,
+        parameters=None,
     ):
         self.scanner = Scanner(jobs_dir)
         self.workdir = WorkDir(work_root)
@@ -24,6 +25,7 @@ class Dispatcher:
         self.project = project
         self.job_type = job_type
         self.servers = servers
+        self.parameters = parameters or {}
 
     def run_once(self) -> int:
         created = 0
@@ -33,7 +35,14 @@ class Dispatcher:
                 project=self.project,
                 job_type=self.job_type,
                 source=source,
+                parameters=self.parameters,
             )
+
+            # manifest = create_manifest(
+            #     project=self.project,
+            #     job_type=self.job_type,
+            #     source=source,
+            # )
 
             job_dir = self.workdir.create(manifest["id"])
 

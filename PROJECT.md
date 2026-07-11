@@ -275,6 +275,7 @@ HTTP는 Comfy 실행에 사용한다.
 
 - ComfyExecutor는 아직 Stub
 - 여러 segment를 여러 Worker에 분산 실행하지 않음
+- manifest가 parameters를 전달할 수 있음
 
 ---
 

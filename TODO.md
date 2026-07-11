@@ -8,13 +8,17 @@ Comfy 작업 진행률을 Hive 콘솔에서 확인할 수 있게 한다.
 
 순서
 
-- [ ] 현재 실행 중인 worker 표시
-- [ ] 현재 처리 중인 segment 표시
-- [ ] VHS meta batch 진행률 표시
-- [ ] elapsed time 표시
-- [ ] 완료/실패 상태 표시
-- [ ] 테스트
-- [ ] 커밋
+- [x] 현재 실행 중인 worker 표시
+- [x] 현재 처리 중인 segment 표시
+- [x] VHS meta batch 진행률 표시
+- [x] elapsed time 표시
+- [x] 완료/실패 상태 표시
+- [x] 테스트
+- [x] 커밋
+
+---
+
+다음 목표: ComfyExecutor가 manifest parameters를 읽어 실제 workflow 실행
 
 ---
 

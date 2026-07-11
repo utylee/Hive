@@ -11,6 +11,7 @@ def create_manifest(
     project: str,
     job_type: str,
     source: Path,
+    parameters: dict | None = None,
 ) -> dict:
 
     job_id = (
@@ -25,7 +26,7 @@ def create_manifest(
         "project": project,
         "type": job_type,
         "source": str(source),
-        "parameters": {},
+        "parameters": parameters or {},
         "metadata": {},
     }
 

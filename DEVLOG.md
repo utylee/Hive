@@ -95,3 +95,11 @@
 - ComfyClient.wait()에 on_progress 콜백 추가
 - VHS BatchManager의 count, frames_per_batch, requeue로 진행률 계산
 - 콘솔 한 줄 갱신 방식으로 진행률 표시 성공
+
+---
+
+### continued Segment E2E
+
+- create_manifest()에 optional parameters 추가
+- Dispatcher가 parameters를 manifest에 전달
+- 관련 테스트 통과

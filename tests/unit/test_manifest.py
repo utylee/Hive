@@ -27,3 +27,21 @@ def test_manifest_generation():
     save_manifest(manifest, out)
 
     assert out.exists()
+
+def test_create_manifest_with_parameters(tmp_path: Path) -> None:
+    source = tmp_path / "segment_0000.mp4"
+
+    manifest = create_manifest(
+        project="hd_remaster",
+        job_type="comfy",
+        source=source,
+        parameters={
+            "base_url": "http://m5:8188",
+            "workflow": "workflow.json",
+        },
+    )
+
+    assert manifest["parameters"] == {
+        "base_url": "http://m5:8188",
+        "workflow": "workflow.json",
+    }
