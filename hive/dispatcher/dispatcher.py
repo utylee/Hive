@@ -33,13 +33,20 @@ class Dispatcher:
         created = 0
 
         for source in self.scanner.scan():
+            server = pick_server(self.servers)
+
             staged_source = Path("input") / source.name
+
+            parameters = {
+                **self.parameters,
+                "comfy_url": server.comfy_url,
+            }
 
             manifest = create_manifest(
                 project=self.project,
                 job_type=self.job_type,
                 source=staged_source,
-                parameters=self.parameters,
+                parameters=parameters,
             )
 
             job_dir = self.workdir.create(manifest["id"])
@@ -54,8 +61,6 @@ class Dispatcher:
                 job_dir / "manifest.json",
             )
 
-            server = pick_server(self.servers)
-
             result = dispatch_remote_job(
                 server,
                 job_dir,
@@ -66,4 +71,39 @@ class Dispatcher:
             created += 1
 
         return created
+
+        # for source in self.scanner.scan():
+        #     staged_source = Path("input") / source.name
+
+        #     manifest = create_manifest(
+        #         project=self.project,
+        #         job_type=self.job_type,
+        #         source=staged_source,
+        #         parameters=self.parameters,
+        #     )
+
+        #     job_dir = self.workdir.create(manifest["id"])
+
+        #     shutil.copy2(
+        #         source,
+        #         job_dir / staged_source,
+        #     )
+
+        #     save_manifest(
+        #         manifest,
+        #         job_dir / "manifest.json",
+        #     )
+
+        #     server = pick_server(self.servers)
+
+        #     result = dispatch_remote_job(
+        #         server,
+        #         job_dir,
+        #     )
+
+        #     assert result["ok"] is True
+
+        #     created += 1
+
+        # return created
 

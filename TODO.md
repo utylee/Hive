@@ -18,7 +18,7 @@ Comfy 작업 진행률을 Hive 콘솔에서 확인할 수 있게 한다.
 
 ---
 
-다음 목표: ComfyExecutor가 job_dir/input/의 source와 manifest parameters를 읽어 실제 workflow 실행
+다음 목표: ComfyExecutor가 manifest의 comfy_url, source, workflow 설정을 읽어 실제 실행
 
 ---
 

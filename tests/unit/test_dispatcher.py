@@ -21,6 +21,7 @@ def test_dispatcher_run_once(monkeypatch) -> None:
         enabled=True,
         ssh_alias="dummy",
         worker_root="/tmp/hive_jobs",
+        comfy_url="http://localhost:8188",
     )
 
     def fake_dispatch_remote_job(server, job_dir):
