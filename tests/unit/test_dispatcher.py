@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from hive.dispatcher.dispatcher import Dispatcher
 
 
-def test_dispatcher_run_once(monkeypatch) -> None:
+def test_dispatcher_run_once(tmp_path: Path, monkeypatch) -> None:
     jobs = Path("/tmp/hive_jobs")
     work = Path("/tmp/hive_work")
 
@@ -33,12 +33,18 @@ def test_dispatcher_run_once(monkeypatch) -> None:
         fake_dispatch_remote_job,
     )
 
+    workflow = tmp_path / "workflow.json"
+    workflow.write_text("{}", encoding="utf-8")
+
     dispatcher = Dispatcher(
         jobs_dir=jobs,
         work_root=work,
         project="vhs_restore",
         job_type="comfy",
         servers=[server],
+        parameters={
+            "workflow": str(workflow),
+        },
     )
 
     created = dispatcher.run_once()

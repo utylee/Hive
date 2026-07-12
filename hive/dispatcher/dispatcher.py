@@ -57,6 +57,16 @@ class Dispatcher:
                 job_dir / staged_source,
             )
 
+            workflow_source = Path(parameters["workflow"])
+            workflow_target = job_dir / "workflow.json"
+
+            shutil.copy2(
+                workflow_source,
+                workflow_target,
+            )
+
+            manifest["parameters"]["workflow"] = "workflow.json"
+
             save_manifest(
                 manifest,
                 job_dir / "manifest.json",

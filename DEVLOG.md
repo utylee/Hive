@@ -129,3 +129,7 @@
 
 - 선택된 서버의 Comfy URL과 input batch 경로를 job manifest에 주입
 - dispatcher 테스트 통과
+
+- source와 workflow를 job_dir 내부에 함께 복사
+- 원격 worker에서 job_dir/input/..., job_dir/workflow.json 사용 가능
+- dispatcher 테스트 통과
