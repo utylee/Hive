@@ -4,7 +4,7 @@ import shutil
 
 from hive.worker.runner import run_job
 
-def test_worker_runs_comfy_executor() -> None:
+def test_worker_runs_comfy_executor(monkeypatch) -> None:
     job_dir = Path("/tmp/hive_worker_comfy_test")
 
     if job_dir.exists():
@@ -25,6 +25,19 @@ def test_worker_runs_comfy_executor() -> None:
     (job_dir / "manifest.json").write_text(
         json.dumps(manifest, indent=2),
         encoding="utf-8",
+    )
+
+    class DummyComfyExecutor:
+        def execute(self, job_dir: Path, manifest: dict) -> dict:
+            return {
+                "ok": True,
+                "executor": "comfy",
+            }
+
+
+    monkeypatch.setattr(
+        "hive.worker.runner.ComfyExecutor",
+        DummyComfyExecutor,
     )
 
     rc = run_job(job_dir)

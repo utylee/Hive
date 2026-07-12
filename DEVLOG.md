@@ -133,3 +133,8 @@
 - source와 workflow를 job_dir 내부에 함께 복사
 - 원격 worker에서 job_dir/input/..., job_dir/workflow.json 사용 가능
 - dispatcher 테스트 통과
+
+- ComfyExecutor가 manifest의 source, workflow, comfy_url, comfy_input_batches 사용
+- 단위 테스트에서 DummyClient로 실행 흐름 검증
+- WorkerRunner 테스트는 DummyComfyExecutor로 executor 선택만 검증
+- 전체 테스트 33개 통과

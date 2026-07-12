@@ -279,6 +279,8 @@ HTTP는 Comfy 실행에 사용한다.
 - manifest parameters에 comfy_url, comfy_input_batches 저장
 - Dispatcher가 API workflow JSON을 job_dir/workflow.json으로 staging
 - manifest의 workflow 경로를 원격에서도 유효한 상대경로로 저장
+- ComfyExecutor 실제 구현 완료
+- source staging → workflow patch → submit → wait → video download 지원
 
 아직 남은 문제:
 
