@@ -272,6 +272,8 @@ HTTP는 Comfy 실행에 사용한다.
 - comfy_client.py가 실행 위치와 무관하게 workflow 경로를 찾도록 수정
 - Dispatcher가 source를 job_dir/input/에 staging
 - manifest에는 input/<filename> 상대경로 저장
+- build_comfy_workflow()가 batch_folder, queue_nonce, frames_per_batch를 실제 노드에 주입
+- 원본 workflow는 deepcopy로 보존
 
 아직 남은 문제:
 

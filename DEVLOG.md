@@ -114,3 +114,9 @@
 
 - Dispatcher가 server 선택 후 comfy_url을 manifest에 주입
 - dispatcher/manifest 테스트 통과
+
+---
+
+- VHSBatchPrecleanPro와 VHS_BatchManager 입력 대상 수정
+- 잘못된 cleanup_threshold 제거
+- workflow patch 단위 테스트 추가 및 통과
