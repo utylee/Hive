@@ -40,6 +40,7 @@ class Dispatcher:
             parameters = {
                 **self.parameters,
                 "comfy_url": server.comfy_url,
+                "comfy_input_batches": server.comfy_input_batches,
             }
 
             manifest = create_manifest(

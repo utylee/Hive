@@ -274,6 +274,9 @@ HTTP는 Comfy 실행에 사용한다.
 - manifest에는 input/<filename> 상대경로 저장
 - build_comfy_workflow()가 batch_folder, queue_nonce, frames_per_batch를 실제 노드에 주입
 - 원본 workflow는 deepcopy로 보존
+- Server에 comfy_input_batches 추가
+- 서버별 Comfy input batch 경로 설정 가능
+- manifest parameters에 comfy_url, comfy_input_batches 저장
 
 아직 남은 문제:
 

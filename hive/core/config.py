@@ -15,6 +15,10 @@ def load_servers(path="configs/servers.yaml"):
                 ssh_alias=s["ssh_alias"],
                 worker_root=s["worker_root"],
                 comfy_url=s["comfy_url"],
+                comfy_input_batches=s.get(
+                    "comfy_input_batches",
+                    "/data/temp/ComfyUI/input/batches",
+                ),
                 enabled=s.get("enabled", True),
                 profile=s.get("profile", {}),
             )

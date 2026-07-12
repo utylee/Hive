@@ -120,3 +120,12 @@
 - VHSBatchPrecleanPro와 VHS_BatchManager 입력 대상 수정
 - 잘못된 cleanup_threshold 제거
 - workflow patch 단위 테스트 추가 및 통과
+
+---
+
+- servers.yaml에서 comfy_input_batches 로드
+- 기본값 /data/temp/ComfyUI/input/batches
+- 관련 테스트 통과
+
+- 선택된 서버의 Comfy URL과 input batch 경로를 job manifest에 주입
+- dispatcher 테스트 통과

@@ -4,6 +4,7 @@ servers:
     ssh_alias: m5
     worker_root: /tmp/hive_jobs
     comfy_url: http://comfy.utylee.mywire.org
+    comfy_input_batches: /data/temp/ComfyUI/input/batches
     enabled: true
     profile:
       frames_per_batch: 16
