@@ -34,10 +34,35 @@ def dispatch_remote_job(server, local_job_dir: Path):
         f"{python} -m hive.worker.main run {remote_job_dir}",
     )
 
+    # remote.copy_from(
+    #     str(local_job_dir / "result.json"),
+    #     alias,
+    #     f"{remote_job_dir}/result.json",
+    # )
+
+    # return load_result(local_job_dir)
+
     remote.copy_from(
         str(local_job_dir / "result.json"),
         alias,
         f"{remote_job_dir}/result.json",
     )
 
-    return load_result(local_job_dir)
+    result = load_result(local_job_dir)
+
+    if result.get("outputs"):
+        local_output_dir = local_job_dir / "output"
+        local_output_dir.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        remote.copy_from(
+            str(local_output_dir) + "/",
+            alias,
+            f"{remote_job_dir}/output/",
+        )
+
+    return result
+
+

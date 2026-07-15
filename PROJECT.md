@@ -281,6 +281,7 @@ HTTP는 Comfy 실행에 사용한다.
 - manifest의 workflow 경로를 원격에서도 유효한 상대경로로 저장
 - ComfyExecutor 실제 구현 완료
 - source staging → workflow patch → submit → wait → video download 지원
+- 원격 작업 완료 후 result.json뿐 아니라 output/ 결과물도 로컬 job 디렉터리로 회수
 
 아직 남은 문제:
 

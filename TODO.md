@@ -22,6 +22,7 @@ Comfy 작업 진행률을 Hive 콘솔에서 확인할 수 있게 한다.
 다음 목표: ComfyExecutor에서 workflow JSON 로드 → patch → submit → wait → video download 연결
 다음 목표: Dispatcher가 선택된 server의 comfy_input_batches를 manifest parameters에 넣기
 다음 목표: 실제 Dispatcher → remote worker → ComfyExecutor E2E 실행
+다음 목표: 실제 Dispatcher → 원격 Worker → ComfyUI → 결과 영상 회수 E2E 실행
 
 ---
 

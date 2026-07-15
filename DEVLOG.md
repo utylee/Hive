@@ -138,3 +138,7 @@
 - 단위 테스트에서 DummyClient로 실행 흐름 검증
 - WorkerRunner 테스트는 DummyComfyExecutor로 executor 선택만 검증
 - 전체 테스트 33개 통과
+
+- result["outputs"]가 있을 때만 원격 output/ 디렉터리 rsync
+- 출력 없는 작업은 기존처럼 정상 종료
+- 전체 테스트 통과
