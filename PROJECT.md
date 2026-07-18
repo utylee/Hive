@@ -292,6 +292,9 @@ HTTP는 Comfy 실행에 사용한다.
 - 실패 원인은 work/<job-id>/error.txt에 기록
 - --retry-failed로 jobs/failed/\*.mp4를 다시 입력 큐로 복구
 - 동일 파일명이 이미 있으면 덮어쓰지 않고 오류 처리
+- 실패 파일 옆에 \*.retry.json 저장
+- 재시도 후 다시 실패하면 retry_count 증가
+- 재시도 성공 시 retry 메타데이터 삭제
 
 아직 남은 문제:
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import shutil
+import json
 
 from hive.dispatcher.manifest import create_manifest, save_manifest
 from hive.dispatcher.scanner import Scanner
@@ -97,9 +98,49 @@ class Dispatcher:
                     exist_ok=True,
                 )
 
+                source_retry_path = (
+                    self.scanner.root
+                    / f"{source.name}.retry.json"
+                )
+
+                retry_path = (
+                    failed_dir
+                    / f"{source.name}.retry.json"
+                )
+
+                retry_count = 0
+
+                if source_retry_path.exists():
+                    retry_data = json.loads(
+                        source_retry_path.read_text(
+                            encoding="utf-8",
+                        )
+                    )
+
+                    retry_count = int(
+                        retry_data.get("retry_count", 0)
+                    )
+
+                    source_retry_path.unlink()
+
                 shutil.move(
                     str(source),
                     failed_dir / source.name,
+                )
+
+                retry_path.write_text(
+                    json.dumps(
+                        {
+                            "retry_count": retry_count + 1,
+                            "last_job_id": manifest["id"],
+                            "last_error": (
+                                f"{type(exc).__name__}: {exc}"
+                            ),
+                        },
+                        indent=2,
+                        ensure_ascii=False,
+                    ),
+                    encoding="utf-8",
                 )
 
                 (job_dir / "error.txt").write_text(
@@ -108,6 +149,14 @@ class Dispatcher:
                 )
 
                 continue
+
+            source_retry_path = (
+                self.scanner.root
+                / f"{source.name}.retry.json"
+            )
+
+            if source_retry_path.exists():
+                source_retry_path.unlink()
 
             done_dir = self.scanner.root / "done"
             done_dir.mkdir(

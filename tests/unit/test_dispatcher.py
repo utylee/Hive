@@ -1,5 +1,6 @@
 from pathlib import Path
 import shutil
+import json
 from types import SimpleNamespace
 
 from hive.dispatcher.dispatcher import Dispatcher
@@ -133,3 +134,79 @@ def test_dispatcher_moves_failed_input(
         assert "remote failure" in error_files[0].read_text(
             encoding="utf-8",
         )
+
+
+def test_dispatcher_increments_retry_count(
+        tmp_path: Path,
+        monkeypatch,
+    ) -> None:
+        jobs = tmp_path / "jobs"
+        work = tmp_path / "work"
+
+        jobs.mkdir()
+        work.mkdir()
+
+        source = jobs / "broken.mp4"
+        source.touch()
+
+        retry_path = jobs / "broken.mp4.retry.json"
+        retry_path.write_text(
+            json.dumps(
+                {
+                    "retry_count": 1,
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        workflow = tmp_path / "workflow.json"
+        workflow.write_text("{}", encoding="utf-8")
+
+        server = SimpleNamespace(
+            enabled=True,
+            ssh_alias="dummy",
+            worker_root="/tmp/hive_jobs",
+            comfy_url="http://localhost:8188",
+            comfy_input_batches="/data/temp/ComfyUI/input/batches",
+            profile={
+                "frames_per_batch": 16,
+            },
+        )
+
+        def fake_dispatch_remote_job(server, job_dir):
+            raise RuntimeError("remote failure again")
+
+        monkeypatch.setattr(
+            "hive.dispatcher.dispatcher.dispatch_remote_job",
+            fake_dispatch_remote_job,
+        )
+
+        dispatcher = Dispatcher(
+            jobs_dir=jobs,
+            work_root=work,
+            project="vhs_restore",
+            job_type="comfy",
+            servers=[server],
+            parameters={
+                "workflow": str(workflow),
+            },
+        )
+
+        created = dispatcher.run_once()
+
+        assert created == 0
+
+        failed_retry_path = (
+            jobs
+            / "failed"
+            / "broken.mp4.retry.json"
+        )
+
+        retry_data = json.loads(
+            failed_retry_path.read_text(
+                encoding="utf-8",
+            )
+        )
+
+        assert retry_data["retry_count"] == 2
+        assert "remote failure again" in retry_data["last_error"]

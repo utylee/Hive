@@ -74,6 +74,15 @@ def main() -> int:
                 target,
             )
 
+            retry_source = failed_dir / f"{source.name}.retry.json"
+            retry_target = args.jobs_dir / f"{source.name}.retry.json"
+
+            if retry_source.exists():
+                shutil.move(
+                    str(retry_source),
+                    retry_target,
+                )
+
             retried += 1
 
         print(f"Restored {retried} failed job(s)")
