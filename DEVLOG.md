@@ -164,3 +164,6 @@
 
 - retry_count >= 3 작업 복구 차단
 - broken.mp4가 failed/에 유지되는 수동 검증 성공
+
+- 한도 초과 작업 격리 로직 추가
+- broken.mp4와 retry 메타데이터가 quarantine으로 이동하는 수동 검증 성공

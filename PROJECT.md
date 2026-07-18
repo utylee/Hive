@@ -298,6 +298,8 @@ HTTP는 Comfy 실행에 사용한다.
 - MAX_RETRIES = 3
 - 재시도 한도에 도달한 실패 작업은 failed/에 유지
 - --retry-failed 실행 시 건너뛴 이유와 횟수 출력
+- retry_count >= 3 작업은 jobs/quarantine/으로 이동
+- MP4와 \*.retry.json을 함께 격리
 
 아직 남은 문제:
 

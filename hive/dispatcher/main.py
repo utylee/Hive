@@ -79,11 +79,30 @@ def main() -> int:
                 )
 
             if retry_count >= MAX_RETRIES:
+                quarantine_dir = args.jobs_dir / "quarantine"
+                quarantine_dir.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+
+                shutil.move(
+                    str(source),
+                    quarantine_dir / source.name,
+                )
+
+                if retry_source.exists():
+                    shutil.move(
+                        str(retry_source),
+                        quarantine_dir / retry_source.name,
+                    )
+
                 print(
-                    f"Skipped {source.name}: "
+                    f"Quarantined {source.name}: "
                     f"retry limit reached ({retry_count})"
                 )
+
                 continue
+
 
             target = args.jobs_dir / source.name
 
