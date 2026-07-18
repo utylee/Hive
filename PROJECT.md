@@ -300,6 +300,8 @@ HTTP는 Comfy 실행에 사용한다.
 - --retry-failed 실행 시 건너뛴 이유와 횟수 출력
 - retry_count >= 3 작업은 jobs/quarantine/으로 이동
 - MP4와 \*.retry.json을 함께 격리
+- --restore-quarantine으로 격리 작업을 입력 큐로 복구
+- 복구 시 기존 retry 메타데이터 삭제 및 횟수 초기화
 
 아직 남은 문제:
 

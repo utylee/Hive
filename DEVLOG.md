@@ -167,3 +167,6 @@
 
 - 한도 초과 작업 격리 로직 추가
 - broken.mp4와 retry 메타데이터가 quarantine으로 이동하는 수동 검증 성공
+
+- quarantine 수동 복구 옵션 추가
+- MP4는 jobs/로 복귀하고 \*.retry.json은 삭제되는 흐름 검증

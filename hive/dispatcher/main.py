@@ -16,6 +16,12 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--restore-quarantine",
+        action="store_true",
+        help="Move quarantined input files back into the jobs directory.",
+    )
+
+    parser.add_argument(
         "--retry-failed",
         action="store_true",
         help="Move failed input files back into the jobs directory.",
@@ -53,6 +59,45 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+
+    if args.restore_quarantine:
+        quarantine_dir = args.jobs_dir / "quarantine"
+
+        if not quarantine_dir.exists():
+            print("No quarantine directory found")
+            return 0
+
+        restored = 0
+
+        for source in sorted(quarantine_dir.glob("*.mp4")):
+            target = args.jobs_dir / source.name
+
+            if target.exists():
+                raise FileExistsError(
+                    f"Restore target already exists: {target}"
+                )
+
+            shutil.move(
+                str(source),
+                target,
+            )
+
+            retry_source = (
+                quarantine_dir
+                / f"{source.name}.retry.json"
+            )
+
+            # 격리 해제는 재시도 횟수를 초기화
+            if retry_source.exists():
+                retry_source.unlink()
+
+            restored += 1
+
+        print(
+            f"Restored {restored} quarantined job(s)"
+        )
+
+        return 0
 
     if args.retry_failed:
         failed_dir = args.jobs_dir / "failed"
