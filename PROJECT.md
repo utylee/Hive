@@ -282,6 +282,9 @@ HTTP는 Comfy 실행에 사용한다.
 - ComfyExecutor 실제 구현 완료
 - source staging → workflow patch → submit → wait → video download 지원
 - 원격 작업 완료 후 result.json뿐 아니라 output/ 결과물도 로컬 job 디렉터리로 회수
+- 실제 Dispatcher → m5 Worker → ComfyUI → 결과 영상 회수 E2E 성공
+- 원격 Worker 가상환경에 requests 필요
+- 결과는 로컬 work/<job-id>/output/에 저장
 
 아직 남은 문제:
 

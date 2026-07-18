@@ -24,6 +24,11 @@ Comfy 작업 진행률을 Hive 콘솔에서 확인할 수 있게 한다.
 다음 목표: 실제 Dispatcher → remote worker → ComfyExecutor E2E 실행
 다음 목표: 실제 Dispatcher → 원격 Worker → ComfyUI → 결과 영상 회수 E2E 실행
 
+완료된 입력 파일 재처리 방지
+실패 작업 상태와 재시도
+다중 서버 병렬 분배
+원격 코드 배포 방식 자동화
+
 ---
 
 다음

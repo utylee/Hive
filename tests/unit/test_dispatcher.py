@@ -17,12 +17,23 @@ def test_dispatcher_run_once(tmp_path: Path, monkeypatch) -> None:
     (jobs / "001.mp4").touch()
     (jobs / "002.mp4").touch()
 
+    # server = SimpleNamespace(
+    #     enabled=True,
+    #     ssh_alias="dummy",
+    #     worker_root="/tmp/hive_jobs",
+    #     comfy_url="http://localhost:8188",
+    #     comfy_input_batches="/data/temp/ComfyUI/input/batches",
+    # )
+
     server = SimpleNamespace(
         enabled=True,
         ssh_alias="dummy",
         worker_root="/tmp/hive_jobs",
         comfy_url="http://localhost:8188",
         comfy_input_batches="/data/temp/ComfyUI/input/batches",
+        profile={
+            "frames_per_batch": 16,
+        },
     )
 
     def fake_dispatch_remote_job(server, job_dir):

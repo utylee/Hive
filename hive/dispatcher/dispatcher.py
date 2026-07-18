@@ -37,10 +37,17 @@ class Dispatcher:
 
             staged_source = Path("input") / source.name
 
+            # parameters = {
+            #     **self.parameters,
+            #     "comfy_url": server.comfy_url,
+            #     "comfy_input_batches": server.comfy_input_batches,
+            # }
+
             parameters = {
                 **self.parameters,
                 "comfy_url": server.comfy_url,
                 "comfy_input_batches": server.comfy_input_batches,
+                "profile": server.profile,
             }
 
             manifest = create_manifest(
