@@ -287,6 +287,9 @@ HTTP는 Comfy 실행에 사용한다.
 - 결과는 로컬 work/<job-id>/output/에 저장
 - 성공한 입력 파일은 jobs/done/으로 이동
 - 완료된 파일은 다음 스캔에서 제외
+- 성공 입력은 jobs/done/
+- 실패 입력은 jobs/failed/
+- 실패 원인은 work/<job-id>/error.txt에 기록
 
 아직 남은 문제:
 

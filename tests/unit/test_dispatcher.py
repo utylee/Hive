@@ -72,3 +72,64 @@ def test_dispatcher_run_once(tmp_path: Path, monkeypatch) -> None:
     assert (jobs / "done" / "001.mp4").exists()
     assert (jobs / "done" / "002.mp4").exists()
 
+
+def test_dispatcher_moves_failed_input(
+        tmp_path: Path,
+        monkeypatch,
+    ) -> None:
+        jobs = tmp_path / "jobs"
+        work = tmp_path / "work"
+
+        jobs.mkdir()
+        work.mkdir()
+
+        source = jobs / "broken.mp4"
+        source.touch()
+
+        workflow = tmp_path / "workflow.json"
+        workflow.write_text("{}", encoding="utf-8")
+
+        server = SimpleNamespace(
+            enabled=True,
+            ssh_alias="dummy",
+            worker_root="/tmp/hive_jobs",
+            comfy_url="http://localhost:8188",
+            comfy_input_batches="/data/temp/ComfyUI/input/batches",
+            profile={
+                "frames_per_batch": 16,
+            },
+        )
+
+        def fake_dispatch_remote_job(server, job_dir):
+            raise RuntimeError("remote failure")
+
+        monkeypatch.setattr(
+            "hive.dispatcher.dispatcher.dispatch_remote_job",
+            fake_dispatch_remote_job,
+        )
+
+        dispatcher = Dispatcher(
+            jobs_dir=jobs,
+            work_root=work,
+            project="vhs_restore",
+            job_type="comfy",
+            servers=[server],
+            parameters={
+                "workflow": str(workflow),
+            },
+        )
+
+        created = dispatcher.run_once()
+
+        assert created == 0
+        assert not source.exists()
+        assert (jobs / "failed" / "broken.mp4").exists()
+
+        error_files = list(
+            work.glob("*/error.txt")
+        )
+
+        assert len(error_files) == 1
+        assert "remote failure" in error_files[0].read_text(
+            encoding="utf-8",
+        )

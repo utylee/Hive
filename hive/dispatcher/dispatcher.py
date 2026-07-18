@@ -79,12 +79,35 @@ class Dispatcher:
                 job_dir / "manifest.json",
             )
 
-            result = dispatch_remote_job(
-                server,
-                job_dir,
-            )
+            try:
+                result = dispatch_remote_job(
+                    server,
+                    job_dir,
+                )
 
-            assert result["ok"] is True
+                if not result.get("ok"):
+                    raise RuntimeError(
+                        f"Remote job failed: {result}"
+                    )
+
+            except Exception as exc:
+                failed_dir = self.scanner.root / "failed"
+                failed_dir.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+
+                shutil.move(
+                    str(source),
+                    failed_dir / source.name,
+                )
+
+                (job_dir / "error.txt").write_text(
+                    f"{type(exc).__name__}: {exc}\n",
+                    encoding="utf-8",
+                )
+
+                continue
 
             done_dir = self.scanner.root / "done"
             done_dir.mkdir(
@@ -99,40 +122,6 @@ class Dispatcher:
 
             created += 1
 
+
         return created
-
-        # for source in self.scanner.scan():
-        #     staged_source = Path("input") / source.name
-
-        #     manifest = create_manifest(
-        #         project=self.project,
-        #         job_type=self.job_type,
-        #         source=staged_source,
-        #         parameters=self.parameters,
-        #     )
-
-        #     job_dir = self.workdir.create(manifest["id"])
-
-        #     shutil.copy2(
-        #         source,
-        #         job_dir / staged_source,
-        #     )
-
-        #     save_manifest(
-        #         manifest,
-        #         job_dir / "manifest.json",
-        #     )
-
-        #     server = pick_server(self.servers)
-
-        #     result = dispatch_remote_job(
-        #         server,
-        #         job_dir,
-        #     )
-
-        #     assert result["ok"] is True
-
-        #     created += 1
-
-        # return created
-
+    
