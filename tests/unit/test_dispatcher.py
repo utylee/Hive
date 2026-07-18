@@ -66,3 +66,9 @@ def test_dispatcher_run_once(tmp_path: Path, monkeypatch) -> None:
 
     assert len(manifests) == 2
 
+    assert not (jobs / "001.mp4").exists()
+    assert not (jobs / "002.mp4").exists()
+
+    assert (jobs / "done" / "001.mp4").exists()
+    assert (jobs / "done" / "002.mp4").exists()
+

@@ -285,6 +285,8 @@ HTTP는 Comfy 실행에 사용한다.
 - 실제 Dispatcher → m5 Worker → ComfyUI → 결과 영상 회수 E2E 성공
 - 원격 Worker 가상환경에 requests 필요
 - 결과는 로컬 work/<job-id>/output/에 저장
+- 성공한 입력 파일은 jobs/done/으로 이동
+- 완료된 파일은 다음 스캔에서 제외
 
 아직 남은 문제:
 

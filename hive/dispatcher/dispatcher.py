@@ -86,6 +86,17 @@ class Dispatcher:
 
             assert result["ok"] is True
 
+            done_dir = self.scanner.root / "done"
+            done_dir.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            shutil.move(
+                str(source),
+                done_dir / source.name,
+            )
+
             created += 1
 
         return created
