@@ -3,10 +3,12 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import shutil
+import json
 
 from hive.core.config import load_servers
 from hive.dispatcher.dispatcher import Dispatcher
 
+MAX_RETRIES = 3
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -62,6 +64,27 @@ def main() -> int:
         retried = 0
 
         for source in sorted(failed_dir.glob("*.mp4")):
+            retry_source = failed_dir / f"{source.name}.retry.json"
+
+            retry_count = 0
+
+            if retry_source.exists():
+                retry_data = json.loads(
+                    retry_source.read_text(
+                        encoding="utf-8",
+                    )
+                )
+                retry_count = int(
+                    retry_data.get("retry_count", 0)
+                )
+
+            if retry_count >= MAX_RETRIES:
+                print(
+                    f"Skipped {source.name}: "
+                    f"retry limit reached ({retry_count})"
+                )
+                continue
+
             target = args.jobs_dir / source.name
 
             if target.exists():

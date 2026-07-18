@@ -161,3 +161,6 @@
 - 실패 메타데이터에 retry_count, last_job_id, last_error 기록
 - --retry-failed가 MP4와 retry JSON을 함께 복구
 - 두 번째 실패 시 retry_count: 2 단위 테스트 통과
+
+- retry_count >= 3 작업 복구 차단
+- broken.mp4가 failed/에 유지되는 수동 검증 성공

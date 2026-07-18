@@ -295,6 +295,9 @@ HTTP는 Comfy 실행에 사용한다.
 - 실패 파일 옆에 \*.retry.json 저장
 - 재시도 후 다시 실패하면 retry_count 증가
 - 재시도 성공 시 retry 메타데이터 삭제
+- MAX_RETRIES = 3
+- 재시도 한도에 도달한 실패 작업은 failed/에 유지
+- --retry-failed 실행 시 건너뛴 이유와 횟수 출력
 
 아직 남은 문제:
 
