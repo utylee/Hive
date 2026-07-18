@@ -175,3 +175,7 @@
 - 실패 시 현재 서버 이름을 failed_servers에 누적
 - 테스트 더미 서버에 name 필드 추가
 - 전체 테스트 통과
+
+- pick_server()가 (server, index) 반환
+- start_index, excluded 지원
+- 다중 서버 순환 및 제외 서버 테스트 추가

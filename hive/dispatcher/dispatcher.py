@@ -29,6 +29,7 @@ class Dispatcher:
         self.job_type = job_type
         self.servers = servers
         self.parameters = parameters or {}
+        self._server_index = 0
 
     def run_once(self) -> int:
         created = 0
@@ -57,14 +58,21 @@ class Dispatcher:
                 )
 
             try:
-                server = pick_server(
+                server, selected_index = pick_server(
                     self.servers,
                     excluded=failed_servers,
+                    start_index=self._server_index,
                 )
             except RuntimeError:
-                server = pick_server(self.servers)
+                server, selected_index = pick_server(
+                    self.servers,
+                    start_index=self._server_index,
+                )
 
-            # server = pick_server(self.servers)
+            self._server_index = (
+                selected_index + 1
+            ) % len(self.servers)
+
 
             staged_source = Path("input") / source.name
 
