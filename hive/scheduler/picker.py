@@ -1,18 +1,24 @@
 from __future__ import annotations
 
 
-def pick_server(servers):
+def pick_server(
+    servers,
+    excluded: set[str] | None = None,
+):
     """
-    Return the first enabled server.
+    Return the first enabled server
+    that is not excluded.
+    """
 
-    This is intentionally simple.
-    Future versions will consider
-    GPU load, queue length, VRAM,
-    CPU load, etc.
-    """
+    excluded = excluded or set()
 
     for server in servers:
-        if server.enabled:
+        if (
+            server.enabled
+            and server.name not in excluded
+        ):
             return server
 
-    raise RuntimeError("No enabled server found.")
+    raise RuntimeError(
+        "No enabled server available."
+    )

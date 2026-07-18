@@ -170,3 +170,8 @@
 
 - quarantine 수동 복구 옵션 추가
 - MP4는 jobs/로 복귀하고 \*.retry.json은 삭제되는 흐름 검증
+
+- pick_server(..., excluded=...) 지원
+- 실패 시 현재 서버 이름을 failed_servers에 누적
+- 테스트 더미 서버에 name 필드 추가
+- 전체 테스트 통과

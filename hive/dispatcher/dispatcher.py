@@ -34,7 +34,37 @@ class Dispatcher:
         created = 0
 
         for source in self.scanner.scan():
-            server = pick_server(self.servers)
+
+            source_retry_path = (
+                self.scanner.root
+                / f"{source.name}.retry.json"
+            )
+
+            failed_servers: set[str] = set()
+
+            if source_retry_path.exists():
+                retry_data = json.loads(
+                    source_retry_path.read_text(
+                        encoding="utf-8",
+                    )
+                )
+
+                failed_servers = set(
+                    retry_data.get(
+                        "failed_servers",
+                        [],
+                    )
+                )
+
+            try:
+                server = pick_server(
+                    self.servers,
+                    excluded=failed_servers,
+                )
+            except RuntimeError:
+                server = pick_server(self.servers)
+
+            # server = pick_server(self.servers)
 
             staged_source = Path("input") / source.name
 
@@ -128,6 +158,8 @@ class Dispatcher:
                     failed_dir / source.name,
                 )
 
+                failed_servers.add(server.name)
+
                 retry_path.write_text(
                     json.dumps(
                         {
@@ -135,6 +167,9 @@ class Dispatcher:
                             "last_job_id": manifest["id"],
                             "last_error": (
                                 f"{type(exc).__name__}: {exc}"
+                            ),
+                            "failed_servers": sorted(
+                                failed_servers
                             ),
                         },
                         indent=2,

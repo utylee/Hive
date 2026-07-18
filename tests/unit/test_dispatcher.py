@@ -27,6 +27,7 @@ def test_dispatcher_run_once(tmp_path: Path, monkeypatch) -> None:
     # )
 
     server = SimpleNamespace(
+        name="dummy",
         enabled=True,
         ssh_alias="dummy",
         worker_root="/tmp/hive_jobs",
@@ -91,6 +92,7 @@ def test_dispatcher_moves_failed_input(
         workflow.write_text("{}", encoding="utf-8")
 
         server = SimpleNamespace(
+            name="dummy",
             enabled=True,
             ssh_alias="dummy",
             worker_root="/tmp/hive_jobs",
@@ -163,6 +165,7 @@ def test_dispatcher_increments_retry_count(
         workflow.write_text("{}", encoding="utf-8")
 
         server = SimpleNamespace(
+            name="dummy",
             enabled=True,
             ssh_alias="dummy",
             worker_root="/tmp/hive_jobs",
