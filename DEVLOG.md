@@ -179,3 +179,6 @@
 - pick_server()가 (server, index) 반환
 - start_index, excluded 지원
 - 다중 서버 순환 및 제외 서버 테스트 추가
+
+- 작업 하나 처리 흐름을 \_process_source()로 분리
+- 두 작업이 서로 다른 서버에서 동시에 실행되는 테스트 추가

@@ -308,6 +308,9 @@ HTTP는 Comfy 실행에 사용한다.
 - Dispatcher가 서버 인덱스를 기억하고 작업마다 라운드로빈 분배
 - 재시도 작업은 failed_servers를 우선 제외
 - 모든 서버가 제외되면 현재 라운드로빈 위치부터 다시 선택
+- ThreadPoolExecutor 기반 병렬 원격 dispatch
+- 기본 동시 작업 수는 enabled 서버 수
+- 작업 할당은 라운드로빈 유지
 
 아직 남은 문제:
 
