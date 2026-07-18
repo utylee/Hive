@@ -1,5 +1,6 @@
 from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from threading import Lock
 
 from pathlib import Path
 
@@ -32,6 +33,10 @@ class Dispatcher:
         self.servers = servers
         self.parameters = parameters or {}
         self._server_index = 0
+        self._server_locks = {
+            server.name: Lock()
+            for server in self.servers
+        }
         self.max_workers = max_workers or len(
             [
                 server
@@ -164,10 +169,15 @@ class Dispatcher:
         )
 
         try:
-            result = dispatch_remote_job(
-                server,
-                job_dir,
-            )
+            server_lock = self._server_locks[
+                server.name
+            ]
+
+            with server_lock:
+                result = dispatch_remote_job(
+                    server,
+                    job_dir,
+                )
 
             if not result.get("ok"):
                 raise RuntimeError(

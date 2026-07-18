@@ -5,6 +5,7 @@ import time
 from types import SimpleNamespace
 
 from hive.dispatcher.dispatcher import Dispatcher
+from threading import Lock
 
 
 def test_dispatcher_run_once(tmp_path: Path, monkeypatch) -> None:
@@ -294,3 +295,77 @@ def test_dispatcher_runs_jobs_in_parallel(
 
     # 순차라면 약 0.6초이므로 병렬 실행 여부 확인
     assert elapsed < 0.55
+
+def test_dispatcher_serializes_jobs_on_same_server(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    jobs = tmp_path / "jobs"
+    work = tmp_path / "work"
+
+    jobs.mkdir()
+    work.mkdir()
+
+    (jobs / "001.mp4").touch()
+    (jobs / "002.mp4").touch()
+
+    workflow = tmp_path / "workflow.json"
+    workflow.write_text("{}", encoding="utf-8")
+
+    server = SimpleNamespace(
+        name="server-a",
+        enabled=True,
+        ssh_alias="server-a",
+        worker_root="/tmp/hive_jobs",
+        comfy_url="http://localhost:8188",
+        comfy_input_batches="/tmp/comfy-a",
+        profile={
+            "frames_per_batch": 16,
+        },
+    )
+
+    active = 0
+    max_active = 0
+    state_lock = Lock()
+
+    def fake_dispatch_remote_job(server, job_dir):
+        nonlocal active, max_active
+
+        with state_lock:
+            active += 1
+            max_active = max(
+                max_active,
+                active,
+            )
+
+        time.sleep(0.2)
+
+        with state_lock:
+            active -= 1
+
+        return {
+            "ok": True,
+            "executor": "dummy",
+        }
+
+    monkeypatch.setattr(
+        "hive.dispatcher.dispatcher.dispatch_remote_job",
+        fake_dispatch_remote_job,
+    )
+
+    dispatcher = Dispatcher(
+        jobs_dir=jobs,
+        work_root=work,
+        project="vhs_restore",
+        job_type="comfy",
+        servers=[server],
+        parameters={
+            "workflow": str(workflow),
+        },
+        max_workers=2,
+    )
+
+    completed = dispatcher.run_once()
+
+    assert completed == 2
+    assert max_active == 1
