@@ -290,6 +290,8 @@ HTTP는 Comfy 실행에 사용한다.
 - 성공 입력은 jobs/done/
 - 실패 입력은 jobs/failed/
 - 실패 원인은 work/<job-id>/error.txt에 기록
+- --retry-failed로 jobs/failed/\*.mp4를 다시 입력 큐로 복구
+- 동일 파일명이 이미 있으면 덮어쓰지 않고 오류 처리
 
 아직 남은 문제:
 

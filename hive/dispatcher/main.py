@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+import shutil
 
 from hive.core.config import load_servers
 from hive.dispatcher.dispatcher import Dispatcher
@@ -10,6 +11,12 @@ from hive.dispatcher.dispatcher import Dispatcher
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Dispatch Hive jobs to remote workers.",
+    )
+
+    parser.add_argument(
+        "--retry-failed",
+        action="store_true",
+        help="Move failed input files back into the jobs directory.",
     )
 
     parser.add_argument(
@@ -44,6 +51,34 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+
+    if args.retry_failed:
+        failed_dir = args.jobs_dir / "failed"
+
+        if not failed_dir.exists():
+            print("No failed directory found")
+            return 0
+
+        retried = 0
+
+        for source in sorted(failed_dir.glob("*.mp4")):
+            target = args.jobs_dir / source.name
+
+            if target.exists():
+                raise FileExistsError(
+                    f"Retry target already exists: {target}"
+                )
+
+            shutil.move(
+                str(source),
+                target,
+            )
+
+            retried += 1
+
+        print(f"Restored {retried} failed job(s)")
+
+        return 0
 
     servers = [
         server
