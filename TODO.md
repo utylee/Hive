@@ -72,6 +72,10 @@ quarantine 작업 수동 복구 명령
 서버별 동시 슬롯 수 설정
 Comfy queue 상태 기반 배정
 
+manifest에 server_name 명시
+서버별 처리 시간 기록
+실제 10개 이상 세그먼트 분산 테스트
+
 ---
 
 다음
