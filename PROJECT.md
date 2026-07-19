@@ -331,6 +331,16 @@ HTTP는 Comfy 실행에 사용한다.
 - elapsed_seconds 기록
 - running / failed / completed 상태 기록
 - 성공과 실패 경로 분리 저장
+- Shared dynamic job queue
+- One worker thread per enabled server
+- Fast servers automatically consume more jobs
+- Manifest execution metadata:
+  - server_name
+  - started_at
+  - finished_at
+  - elapsed_seconds
+  - status
+- 10-job / 5-server real E2E test completed successfully
 
 아직 남은 문제:
 
