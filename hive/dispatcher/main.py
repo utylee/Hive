@@ -7,12 +7,19 @@ import json
 
 from hive.core.config import load_servers
 from hive.dispatcher.dispatcher import Dispatcher
+from hive.dispatcher.preflight import check_server
 
 MAX_RETRIES = 3
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Dispatch Hive jobs to remote workers.",
+    )
+
+    parser.add_argument(
+        "--preflight",
+        action="store_true",
+        help="Check enabled server environments and exit.",
     )
 
     parser.add_argument(
@@ -184,6 +191,28 @@ def main() -> int:
 
     if not servers:
         raise RuntimeError("No enabled servers configured")
+
+    if args.preflight:
+        all_ok = True
+
+        for server in servers:
+            result = check_server(server)
+
+            print(
+                f"{server.name}: "
+                f"ssh={result.ssh_ok} "
+                f"python={result.python_ok} "
+                f"hive={result.hive_ok} "
+                f"comfy={result.comfy_ok}"
+            )
+
+            if result.error:
+                print(f"  error: {result.error}")
+
+            if not result.ok:
+                all_ok = False
+
+        return 0 if all_ok else 1
 
     if not args.workflow.exists():
         raise FileNotFoundError(
