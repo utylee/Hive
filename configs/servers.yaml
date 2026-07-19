@@ -6,6 +6,7 @@ servers:
     comfy_url: http://comfy.utylee.mywire.org
     comfy_input_batches: /data/temp/ComfyUI/input/batches
     comfy_output_dir: /data/temp/ComfyUI/output
+    hive_root: /data/temp/Hive
     hive_python: /data/temp/Hive/.venv/bin/python
     enabled: true
     profile:
@@ -18,6 +19,7 @@ servers:
     comfy_url: http://comfyccy2.utylee.mywire.org
     comfy_input_batches: /home/utylee/temp/ComfyUI/input/batches
     comfy_output_dir: /home/utylee/temp/ComfyUI/output
+    hive_root: /home/utylee/temp/Hive
     hive_python: /home/utylee/temp/Hive/.venv/bin/python
     enabled: true
     profile:
@@ -30,6 +32,7 @@ servers:
     comfy_url: http://comfymac.utylee.mywire.org
     comfy_input_batches: /Users/utylee/temp/ComfyUI/input/batches
     comfy_output_dir: /Users/utylee/temp/ComfyUI/output
+    hive_root: /Users/utylee/temp/Hive
     hive_python: /Users/utylee/temp/Hive/.venv/bin/python
     enabled: true
     profile:
@@ -42,6 +45,7 @@ servers:
     comfy_url: http://comfyccy.utylee.mywire.org
     comfy_input_batches: /home/utylee/ComfyUI/input/batches
     comfy_output_dir: /home/utylee/ComfyUI/output
+    hive_root: /home/utylee/temp/Hive
     hive_python: /home/utylee/temp/Hive/.venv/bin/python
     enabled: true
     profile:
@@ -55,6 +59,7 @@ servers:
     comfy_url: http://comfywsl.utylee.mywire.org
     comfy_input_batches: /home/utylee/temp/ComfyUI/input/batches
     comfy_output_dir: /home/utylee/temp/ComfyUI/output
+    hive_root: /home/utylee/temp/Hive
     hive_python: /home/utylee/temp/Hive/.venv/bin/python
     enabled: true
     profile:
