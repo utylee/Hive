@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import subprocess
 from pathlib import Path
+from time import sleep
 
 
 class RemoteError(RuntimeError):
@@ -26,23 +27,64 @@ def run_local(
     args: list[str],
     *,
     check: bool = True,
+    retries: int = 2,
+    retry_delay: float = 0.5,
 ) -> subprocess.CompletedProcess:
-    result = subprocess.run(
-        args,
-        text=True,
-        capture_output=True,
-    )
+    attempts = retries + 1
 
-    if check and result.returncode != 0:
-        cmd = " ".join(args)
-        raise RemoteError(
-            f"Command failed: {cmd}\n"
-            f"returncode={result.returncode}\n"
-            f"stdout={result.stdout}\n"
-            f"stderr={result.stderr}"
+    for attempt in range(attempts):
+        result = subprocess.run(
+            args,
+            text=True,
+            capture_output=True,
         )
 
-    return result
+        if result.returncode == 0:
+            return result
+
+        should_retry = (
+            result.returncode == 255
+            and attempt < retries
+        )
+
+        if should_retry:
+            sleep(retry_delay)
+            continue
+
+        if check:
+            cmd = " ".join(args)
+            raise RemoteError(
+                f"Command failed: {cmd}\n"
+                f"returncode={result.returncode}\n"
+                f"stdout={result.stdout}\n"
+                f"stderr={result.stderr}"
+            )
+
+        return result
+
+    raise RuntimeError("unreachable")
+
+# def run_local(
+#     args: list[str],
+#     *,
+#     check: bool = True,
+# ) -> subprocess.CompletedProcess:
+#     result = subprocess.run(
+#         args,
+#         text=True,
+#         capture_output=True,
+#     )
+
+#     if check and result.returncode != 0:
+#         cmd = " ".join(args)
+#         raise RemoteError(
+#             f"Command failed: {cmd}\n"
+#             f"returncode={result.returncode}\n"
+#             f"stdout={result.stdout}\n"
+#             f"stderr={result.stderr}"
+#         )
+
+#     return result
 
 
 def exec(
