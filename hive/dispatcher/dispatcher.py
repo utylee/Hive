@@ -1,17 +1,19 @@
+
 from __future__ import annotations
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from threading import Lock
-
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 from pathlib import Path
+from queue import Empty, Queue
+from time import perf_counter
 
-import shutil
 import json
+import shutil
 
 from hive.dispatcher.manifest import create_manifest, save_manifest
 from hive.dispatcher.scanner import Scanner
 from hive.dispatcher.workdir import WorkDir
 from hive.dispatcher.remote_dispatcher import dispatch_remote_job
-from hive.scheduler import pick_server
+# from hive.scheduler import pick_server
 
 
 class Dispatcher:
@@ -32,11 +34,11 @@ class Dispatcher:
         self.job_type = job_type
         self.servers = servers
         self.parameters = parameters or {}
-        self._server_index = 0
-        self._server_locks = {
-            server.name: Lock()
-            for server in self.servers
-        }
+        # self._server_index = 0
+        # self._server_locks = {
+        #     server.name: Lock()
+        #     for server in self.servers
+        # }
         self.max_workers = max_workers or len(
             [
                 server
@@ -45,8 +47,24 @@ class Dispatcher:
             ]
         )
 
+
     def run_once(self) -> int:
-        jobs = []
+        enabled_servers = [
+            server
+            for server in self.servers
+            if server.enabled
+        ]
+
+        if not enabled_servers:
+            raise RuntimeError(
+                "No enabled servers available"
+            )
+
+        worker_servers = enabled_servers[
+            : self.max_workers
+        ]
+
+        job_queue: Queue = Queue()
 
         for source in self.scanner.scan():
             source_retry_path = (
@@ -70,50 +88,91 @@ class Dispatcher:
                     )
                 )
 
-            try:
-                server, selected_index = pick_server(
-                    self.servers,
-                    excluded=failed_servers,
-                    start_index=self._server_index,
-                )
-            except RuntimeError:
-                server, selected_index = pick_server(
-                    self.servers,
-                    start_index=self._server_index,
-                )
-
-            self._server_index = (
-                selected_index + 1
-            ) % len(self.servers)
-
-            jobs.append(
+            job_queue.put(
                 (
                     source,
-                    server,
                     failed_servers,
                 )
             )
 
-        completed = 0
-
         with ThreadPoolExecutor(
-            max_workers=self.max_workers,
+            max_workers=len(worker_servers),
         ) as executor:
             futures = [
                 executor.submit(
-                    self._process_source,
-                    source,
+                    self._server_worker,
                     server,
-                    failed_servers,
+                    job_queue,
                 )
-                for source, server, failed_servers in jobs
+                for server in worker_servers
             ]
 
-            for future in as_completed(futures):
-                if future.result():
-                    completed += 1
+            return sum(
+                future.result()
+                for future in futures
+            )
+
+    def _server_worker(
+        self,
+        server,
+        job_queue: Queue,
+    ) -> int:
+        completed = 0
+
+        while True:
+            job = self._take_job_for_server(
+                server,
+                job_queue,
+            )
+
+            if job is None:
+                break
+
+            source, failed_servers = job
+
+            if self._process_source(
+                source,
+                server,
+                failed_servers,
+            ):
+                completed += 1
 
         return completed
+
+    def _take_job_for_server(
+        self,
+        server,
+        job_queue: Queue,
+    ):
+        deferred = []
+
+        queue_size = job_queue.qsize()
+
+        for _ in range(queue_size):
+            try:
+                job = job_queue.get_nowait()
+            except Empty:
+                break
+
+            _, failed_servers = job
+
+            if server.name not in failed_servers:
+                for deferred_job in deferred:
+                    job_queue.put(deferred_job)
+
+                return job
+
+            deferred.append(job)
+
+        for deferred_job in deferred:
+            job_queue.put(deferred_job)
+
+        # 모든 남은 작업이 이 서버에서 실패한 이력이 있다면
+        # 예전 동작처럼 다른 선택지가 없을 때는 다시 허용한다.
+        try:
+            return job_queue.get_nowait()
+        except Empty:
+            return None
 
     def _process_source(
         self,
@@ -170,15 +229,10 @@ class Dispatcher:
         )
 
         try:
-            server_lock = self._server_locks[
-                server.name
-            ]
-
-            with server_lock:
-                result = dispatch_remote_job(
-                    server,
-                    job_dir,
-                )
+            result = dispatch_remote_job(
+                server,
+                job_dir,
+            )
 
             if not result.get("ok"):
                 raise RuntimeError(

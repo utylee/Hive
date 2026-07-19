@@ -23,6 +23,10 @@ def load_servers(path="configs/servers.yaml"):
                     "comfy_output_dir",
                     "/data/temp/ComfyUI/output",
                 ),
+                hive_python=s.get(
+                    "hive_python",
+                    "/home/utylee/temp/Hive/.venv/bin/python",
+                ),
                 enabled=s.get("enabled", True),
                 profile=s.get("profile", {}),
             )

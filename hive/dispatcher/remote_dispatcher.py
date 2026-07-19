@@ -19,7 +19,8 @@ def dispatch_remote_job(server, local_job_dir: Path):
 
     alias = server.ssh_alias
     hive_root = getattr(server, "hive_root", "/home/utylee/temp/Hive")
-    python = f"{hive_root}/.venv/bin/python"
+    python = server.hive_python
+    # python = f"{hive_root}/.venv/bin/python"
 
     remote.mkdir(alias, remote_root)
 

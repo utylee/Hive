@@ -320,6 +320,12 @@ HTTP는 Comfy 실행에 사용한다.
 - 서버별 comfy_input_batches, comfy_output_dir 사용
 - 동일 API workflow를 서버별 경로에 맞게 런타임 패치
 - 두 결과 MP4 모두 로컬로 정상 회수
+- 정적 라운드로빈 사전 할당 제거
+- 서버별 worker가 공용 Queue에서 작업을 가져가도록 변경
+- 빠른 서버가 작업 완료 즉시 다음 작업 처리
+- manifest에 server_name, started_at, finished_at,
+  elapsed_seconds, status 기록
+- pytest 및 pyright 통과
 
 아직 남은 문제:
 
