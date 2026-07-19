@@ -341,6 +341,10 @@ HTTP는 Comfy 실행에 사용한다.
   - elapsed_seconds
   - status
 - 10-job / 5-server real E2E test completed successfully
+- Server-specific Hive roots
+- Automatic Hive package sync before remote dispatch
+- Retry transient SSH/rsync failures
+- Server preflight command for SSH, Python, Hive, and ComfyUI
 
 아직 남은 문제:
 

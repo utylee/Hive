@@ -211,3 +211,15 @@
 - legion: 1 job, avg 3286.79s
 
 정적 균등 배분이 아니라 서버 처리 속도에 따라 작업 수가 자연스럽게 배분됨.
+
+## 2026-07-20 Remote Reliability Improvements
+
+- 서버별 `hive_root` 설정 추가
+- 서버별 Hive 소스 자동 동기화
+- 원격 명령의 일시적 `returncode=255` 오류 재시도
+- 서버 preflight 검사 추가
+  - SSH 접속
+  - 원격 Python 실행
+  - `import hive`
+  - ComfyUI 응답
+- 5개 서버 모두 preflight 통과

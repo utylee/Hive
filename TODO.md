@@ -76,6 +76,11 @@ manifest에 server_name 명시
 서버별 처리 시간 기록
 실제 10개 이상 세그먼트 분산 테스트
 
+- [x] 서버별 Hive 프로젝트 경로 지원
+- [x] 원격 Hive 코드 자동 동기화
+- [x] SSH returncode 255 재시도
+- [x] 서버 환경 preflight 검사
+
 ---
 
 다음
