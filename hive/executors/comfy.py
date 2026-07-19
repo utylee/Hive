@@ -47,6 +47,10 @@ class ComfyExecutor:
             base_workflow,
             job={
                 "remote_batch_folder": batch_folder,
+                "output_folder": str(
+                    Path(parameters["comfy_output_dir"])
+                    / "vhs_preclean"
+                ),
                 "queue_nonce": random.randint(
                     0,
                     999_999_999,

@@ -17,7 +17,11 @@ def load_servers(path="configs/servers.yaml"):
                 comfy_url=s["comfy_url"],
                 comfy_input_batches=s.get(
                     "comfy_input_batches",
-                    "/data/temp/ComfyUI/input/batches",
+                    "/home/utylee/temp/ComfyUI/input/batches",
+                ),
+                comfy_output_dir=s.get(
+                    "comfy_output_dir",
+                    "/data/temp/ComfyUI/output",
                 ),
                 enabled=s.get("enabled", True),
                 profile=s.get("profile", {}),

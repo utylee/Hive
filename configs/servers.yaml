@@ -5,6 +5,18 @@ servers:
     worker_root: /tmp/hive_jobs
     comfy_url: http://comfy.utylee.mywire.org
     comfy_input_batches: /data/temp/ComfyUI/input/batches
+    comfy_output_dir: /data/temp/ComfyUI/output
+    enabled: true
+    profile:
+      frames_per_batch: 16
+
+  ccy2:
+    label: CCY2
+    ssh_alias: ccy2
+    worker_root: /tmp/hive_jobs
+    comfy_url: http://comfyccy2.utylee.mywire.org
+    comfy_input_batches: /home/utylee/temp/ComfyUI/input/batches
+    comfy_output_dir: /home/utylee/temp/ComfyUI/output
     enabled: true
     profile:
       frames_per_batch: 16
@@ -14,7 +26,9 @@ servers:
     ssh_alias: mac 
     worker_root: /tmp/hive_jobs
     comfy_url: http://comfymac.utylee.mywire.org
-    enabled: true
+    comfy_input_batches: /home/utylee/temp/ComfyUI/input/batches
+    comfy_output_dir: /home/utylee/temp/ComfyUI/output
+    enabled: false
     profile:
       frames_per_batch: 16
 
@@ -23,24 +37,20 @@ servers:
     ssh_alias: ccy
     worker_root: /tmp/hive_jobs
     comfy_url: http://comfyccy.utylee.mywire.org
-    enabled: true
+    comfy_input_batches: /home/utylee/ComfyUI/input/batches
+    comfy_output_dir: /home/utylee/ComfyUI/output
+    enabled: false
     profile:
       frames_per_batch: 8
 
-  ccy2:
-    label: CCY2
-    ssh_alias: ccy2
-    worker_root: /tmp/hive_jobs
-    comfy_url: http://comfyccy2.utylee.mywire.org
-    enabled: true
-    profile:
-      frames_per_batch: 16
 
   wsl12:
     label: wsl12
     ssh_alias: wsl12
     worker_root: /tmp/hive_jobs
     comfy_url: http://comfywsl.utylee.mywire.org
-    enabled: true
+    comfy_input_batches: /home/utylee/temp/ComfyUI/input/batches
+    comfy_output_dir: /home/utylee/temp/ComfyUI/output
+    enabled: false
     profile:
       frames_per_batch: 16

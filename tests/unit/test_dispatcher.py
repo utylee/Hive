@@ -35,6 +35,7 @@ def test_dispatcher_run_once(tmp_path: Path, monkeypatch) -> None:
         worker_root="/tmp/hive_jobs",
         comfy_url="http://localhost:8188",
         comfy_input_batches="/data/temp/ComfyUI/input/batches",
+        comfy_output_dir="/tmp/comfy-output",
         profile={
             "frames_per_batch": 16,
         },
@@ -100,6 +101,7 @@ def test_dispatcher_moves_failed_input(
             worker_root="/tmp/hive_jobs",
             comfy_url="http://localhost:8188",
             comfy_input_batches="/data/temp/ComfyUI/input/batches",
+            comfy_output_dir="/tmp/comfy-output",
             profile={
                 "frames_per_batch": 16,
             },
@@ -173,6 +175,7 @@ def test_dispatcher_increments_retry_count(
             worker_root="/tmp/hive_jobs",
             comfy_url="http://localhost:8188",
             comfy_input_batches="/data/temp/ComfyUI/input/batches",
+            comfy_output_dir="/tmp/comfy-output",
             profile={
                 "frames_per_batch": 16,
             },
@@ -240,6 +243,7 @@ def test_dispatcher_runs_jobs_in_parallel(
             worker_root="/tmp/hive_jobs",
             comfy_url="http://localhost:8188",
             comfy_input_batches="/tmp/comfy-a",
+            comfy_output_dir="/tmp/comfy-output",
             profile={"frames_per_batch": 16},
         ),
         SimpleNamespace(
@@ -249,6 +253,7 @@ def test_dispatcher_runs_jobs_in_parallel(
             worker_root="/tmp/hive_jobs",
             comfy_url="http://localhost:8188",
             comfy_input_batches="/tmp/comfy-b",
+            comfy_output_dir="/tmp/comfy-output",
             profile={"frames_per_batch": 16},
         ),
     ]
@@ -319,6 +324,7 @@ def test_dispatcher_serializes_jobs_on_same_server(
         worker_root="/tmp/hive_jobs",
         comfy_url="http://localhost:8188",
         comfy_input_batches="/tmp/comfy-a",
+        comfy_output_dir="/tmp/comfy-output",
         profile={
             "frames_per_batch": 16,
         },

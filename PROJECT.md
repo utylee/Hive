@@ -313,6 +313,9 @@ HTTP는 Comfy 실행에 사용한다.
 - 작업 할당은 라운드로빈 유지
 - 서버별 Lock으로 동일 서버 동시 실행 방지
 - 서로 다른 서버는 병렬 실행 유지
+- 서버별 comfy_output_dir 설정 지원
+- VHSBatchPrecleanPro.output_folder를 제출 직전에 서버 경로로 패치
+- 동일 API workflow를 m5, ccy2 등 서로 다른 경로 구조에서 공용 사용
 
 아직 남은 문제:
 

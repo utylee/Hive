@@ -82,6 +82,9 @@ def test_comfy_executor(
             "workflow": "workflow.json",
             "comfy_url": "http://localhost:8188",
             "comfy_input_batches": str(comfy_input_batches),
+            "comfy_output_dir": str(
+                tmp_path / "comfy_output"
+            ),
         },
     }
 

@@ -43,6 +43,13 @@ def build_comfy_workflow(
     patch_first_node_input(
         workflow,
         "VHSBatchPrecleanPro",
+        "output_folder",
+        job["output_folder"],
+    )
+
+    patch_first_node_input(
+        workflow,
+        "VHSBatchPrecleanPro",
         "queue_nonce",
         job["queue_nonce"],
     )

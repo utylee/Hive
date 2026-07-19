@@ -7,6 +7,7 @@ class Server:
     worker_root: str
     comfy_url: str
     comfy_input_batches: str
+    comfy_output_dir: str
     enabled: bool = True
     profile: dict | None = None
 

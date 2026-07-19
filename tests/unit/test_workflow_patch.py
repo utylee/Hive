@@ -22,6 +22,7 @@ def test_build_comfy_workflow() -> None:
         base_workflow,
         job={
             "remote_batch_folder": "hive/job1",
+            "output_folder": "/tmp/comfy/output/vhs_preclean",
             "queue_nonce": 123,
         },
         server={
@@ -34,5 +35,9 @@ def test_build_comfy_workflow() -> None:
     assert workflow["75"]["inputs"]["batch_folder"] == "hive/job1"
     assert workflow["75"]["inputs"]["queue_nonce"] == 123
     assert workflow["7"]["inputs"]["frames_per_batch"] == 8
+    assert (
+        workflow["75"]["inputs"]["output_folder"]
+        == "/tmp/comfy/output/vhs_preclean"
+    )
 
     assert base_workflow["75"]["inputs"]["batch_folder"] == "old"
