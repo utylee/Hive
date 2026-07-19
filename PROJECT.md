@@ -326,6 +326,11 @@ HTTP는 Comfy 실행에 사용한다.
 - manifest에 server_name, started_at, finished_at,
   elapsed_seconds, status 기록
 - pytest 및 pyright 통과
+- manifest에 server_name 기록
+- started_at / finished_at 기록
+- elapsed_seconds 기록
+- running / failed / completed 상태 기록
+- 성공과 실패 경로 분리 저장
 
 아직 남은 문제:
 

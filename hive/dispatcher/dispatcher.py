@@ -13,7 +13,6 @@ from hive.dispatcher.manifest import create_manifest, save_manifest
 from hive.dispatcher.scanner import Scanner
 from hive.dispatcher.workdir import WorkDir
 from hive.dispatcher.remote_dispatcher import dispatch_remote_job
-# from hive.scheduler import pick_server
 
 
 class Dispatcher:
@@ -34,11 +33,6 @@ class Dispatcher:
         self.job_type = job_type
         self.servers = servers
         self.parameters = parameters or {}
-        # self._server_index = 0
-        # self._server_locks = {
-        #     server.name: Lock()
-        #     for server in self.servers
-        # }
         self.max_workers = max_workers or len(
             [
                 server
@@ -196,6 +190,13 @@ class Dispatcher:
             source=staged_source,
             parameters=parameters,
         )
+        started_timer = perf_counter()
+
+        manifest["server_name"] = server.name
+        manifest["started_at"] = datetime.now(
+            timezone.utc,
+        ).isoformat()
+        manifest["status"] = "running"
 
         job_dir = self.workdir.create(
             manifest["id"]
@@ -240,6 +241,24 @@ class Dispatcher:
                 )
 
         except Exception as exc:
+            manifest["finished_at"] = datetime.now(
+                timezone.utc,
+            ).isoformat()
+
+            manifest["elapsed_seconds"] = round(
+                perf_counter() - started_timer,
+                3,
+            )
+
+            manifest["status"] = "failed"
+
+            save_manifest(
+                manifest,
+                job_dir / "manifest.json",
+            )
+
+
+
             failed_dir = (
                 self.scanner.root / "failed"
             )
@@ -308,6 +327,22 @@ class Dispatcher:
             )
 
             return False
+
+        manifest["finished_at"] = datetime.now(
+            timezone.utc,
+        ).isoformat()
+
+        manifest["elapsed_seconds"] = round(
+            perf_counter() - started_timer,
+            3,
+        )
+
+        manifest["status"] = "completed"
+
+        save_manifest(
+            manifest,
+            job_dir / "manifest.json",
+        )
 
         source_retry_path = (
             self.scanner.root
