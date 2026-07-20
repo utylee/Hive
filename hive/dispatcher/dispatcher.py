@@ -25,6 +25,7 @@ class Dispatcher:
         servers,
         parameters=None,
         max_workers=None,
+        max_retries=3,
     ):
         self.scanner = Scanner(jobs_dir)
         self.workdir = WorkDir(work_root)
@@ -40,7 +41,7 @@ class Dispatcher:
                 if server.enabled
             ]
         )
-
+        self.max_retries = max_retries
 
     def run_once(self) -> int:
         enabled_servers = [
@@ -58,6 +59,32 @@ class Dispatcher:
             : self.max_workers
         ]
 
+        active_names = {
+            source.name
+            for source in self.scanner.scan()
+        }
+
+        completed = 0
+
+        while active_names:
+            completed += self._run_round(
+                worker_servers,
+            )
+
+            restored = self._restore_retryable_failed(
+                worker_servers,
+                active_names,
+            )
+
+            if restored == 0:
+                break
+
+        return completed
+    
+    def _run_round(
+        self,
+        worker_servers,
+    ) -> int:
         job_queue: Queue = Queue()
 
         for source in self.scanner.scan():
@@ -105,6 +132,98 @@ class Dispatcher:
                 future.result()
                 for future in futures
             )
+
+    def _restore_retryable_failed(
+        self,
+        worker_servers,
+        active_names: set[str],
+    ) -> int:
+        failed_dir = (
+            self.scanner.root / "failed"
+        )
+
+        if not failed_dir.exists():
+            return 0
+
+        available_servers = {
+            server.name
+            for server in worker_servers
+        }
+
+        restored = 0
+
+        for source in sorted(
+            failed_dir.glob("*.mp4")
+        ):
+            if source.name not in active_names:
+                continue
+
+            retry_source = (
+                failed_dir
+                / f"{source.name}.retry.json"
+            )
+
+            if not retry_source.exists():
+                continue
+
+            retry_data = json.loads(
+                retry_source.read_text(
+                    encoding="utf-8",
+                )
+            )
+
+            retry_count = int(
+                retry_data.get(
+                    "retry_count",
+                    0,
+                )
+            )
+
+            failed_servers = set(
+                retry_data.get(
+                    "failed_servers",
+                    [],
+                )
+            )
+
+            if retry_count >= self.max_retries:
+                continue
+
+            untried_servers = (
+                available_servers - failed_servers
+            )
+
+            if not untried_servers:
+                continue
+
+            target = (
+                self.scanner.root / source.name
+            )
+
+            retry_target = (
+                self.scanner.root
+                / f"{source.name}.retry.json"
+            )
+
+            if target.exists():
+                raise FileExistsError(
+                    f"Retry target already exists: {target}"
+                )
+
+            shutil.move(
+                str(source),
+                target,
+            )
+
+            shutil.move(
+                str(retry_source),
+                retry_target,
+            )
+
+            restored += 1
+
+        return restored
+
 
     def _server_worker(
         self,
@@ -161,12 +280,14 @@ class Dispatcher:
         for deferred_job in deferred:
             job_queue.put(deferred_job)
 
-        # 모든 남은 작업이 이 서버에서 실패한 이력이 있다면
-        # 예전 동작처럼 다른 선택지가 없을 때는 다시 허용한다.
-        try:
-            return job_queue.get_nowait()
-        except Empty:
-            return None
+        return None
+
+        # # 모든 남은 작업이 이 서버에서 실패한 이력이 있다면
+        # # 예전 동작처럼 다른 선택지가 없을 때는 다시 허용한다.
+        # try:
+        #     return job_queue.get_nowait()
+        # except Empty:
+        #     return None
 
     def _process_source(
         self,

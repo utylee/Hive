@@ -3,9 +3,10 @@ import shutil
 import json
 import time
 from types import SimpleNamespace
+from threading import Lock
 
 from hive.dispatcher.dispatcher import Dispatcher
-from threading import Lock
+from hive.server import Server
 
 
 def test_dispatcher_run_once(tmp_path: Path, monkeypatch) -> None:
@@ -375,3 +376,100 @@ def test_dispatcher_serializes_jobs_on_same_server(
 
     assert completed == 2
     assert max_active == 1
+
+def test_dispatcher_retries_failed_job_on_another_server(
+    tmp_path,
+    monkeypatch,
+):
+    jobs_dir = tmp_path / "jobs"
+    work_root = tmp_path / "work"
+    workflow = tmp_path / "workflow.json"
+
+    jobs_dir.mkdir()
+    workflow.write_text(
+        "{}",
+        encoding="utf-8",
+    )
+
+    source = jobs_dir / "segment.mp4"
+    source.write_bytes(b"video")
+
+    servers = [
+        Server(
+            name="server-a",
+            ssh_alias="server-a",
+            worker_root="/tmp/hive_jobs",
+            comfy_url="http://server-a",
+            comfy_input_batches="/tmp/input",
+            comfy_output_dir="/tmp/output",
+            hive_root="/tmp/Hive",
+            hive_python="/tmp/Hive/.venv/bin/python",
+            enabled=True,
+            profile={},
+        ),
+        Server(
+            name="server-b",
+            ssh_alias="server-b",
+            worker_root="/tmp/hive_jobs",
+            comfy_url="http://server-b",
+            comfy_input_batches="/tmp/input",
+            comfy_output_dir="/tmp/output",
+            hive_root="/tmp/Hive",
+            hive_python="/tmp/Hive/.venv/bin/python",
+            enabled=True,
+            profile={},
+        ),
+    ]
+
+    calls = []
+
+    def fake_dispatch_remote_job(
+        server,
+        job_dir,
+    ):
+        calls.append(server.name)
+
+        if server.name == "server-a":
+            raise RuntimeError("temporary failure")
+
+        return {
+            "ok": True,
+            "outputs": [],
+        }
+
+    monkeypatch.setattr(
+        "hive.dispatcher.dispatcher.dispatch_remote_job",
+        fake_dispatch_remote_job,
+    )
+
+    dispatcher = Dispatcher(
+        jobs_dir=jobs_dir,
+        work_root=work_root,
+        project="test",
+        job_type="comfy",
+        servers=servers,
+        parameters={
+            "workflow": str(workflow),
+        },
+    )
+
+    completed = dispatcher.run_once()
+
+    assert completed == 1
+    assert calls == [
+        "server-a",
+        "server-b",
+    ]
+
+    assert (
+        jobs_dir / "done" / source.name
+    ).exists()
+
+    assert not (
+        jobs_dir / "failed" / source.name
+    ).exists()
+
+    assert not (
+        jobs_dir
+        / f"{source.name}.retry.json"
+    ).exists()
