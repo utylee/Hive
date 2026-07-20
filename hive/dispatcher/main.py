@@ -181,7 +181,8 @@ def main() -> int:
 
         print(f"Restored {retried} failed job(s)")
 
-        return 0
+        if retried == 0:
+            return 0
 
     servers = [
         server
