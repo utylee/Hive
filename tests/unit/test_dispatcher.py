@@ -631,3 +631,70 @@ def test_server_events_are_written(
         "timestamp" in record
         for record in records
     )
+
+def test_server_state_persists_across_dispatcher_restart(
+    tmp_path,
+):
+    jobs_dir = tmp_path / "jobs"
+    work_root = tmp_path / "work"
+
+    jobs_dir.mkdir()
+
+    server = Server(
+        name="server-a",
+        ssh_alias="server-a",
+        worker_root="/tmp/hive_jobs",
+        comfy_url="http://server-a",
+        comfy_input_batches="/tmp/input",
+        comfy_output_dir="/tmp/output",
+        hive_root="/tmp/Hive",
+        hive_python="/tmp/Hive/.venv/bin/python",
+        enabled=True,
+        profile={},
+    )
+
+    first = Dispatcher(
+        jobs_dir=jobs_dir,
+        work_root=work_root,
+        project="test",
+        job_type="comfy",
+        servers=[server],
+        server_failure_threshold=2,
+        server_cooldown_seconds=60.0,
+    )
+
+    first._record_server_failure(server)
+    first._record_server_failure(server)
+
+    state_path = (
+        work_root / "server_state.json"
+    )
+
+    assert state_path.exists()
+
+    second = Dispatcher(
+        jobs_dir=jobs_dir,
+        work_root=work_root,
+        project="test",
+        job_type="comfy",
+        servers=[server],
+        server_failure_threshold=2,
+        server_cooldown_seconds=60.0,
+    )
+
+    assert (
+        second._server_failures["server-a"]
+        == 2
+    )
+
+    assert (
+        second._server_cooldown_until[
+            "server-a"
+        ]
+        > time.time()
+    )
+
+    assert (
+        second._server_is_available(server)
+        is False
+    )

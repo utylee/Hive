@@ -6,7 +6,8 @@ from pathlib import Path
 from queue import Empty, Queue
 
 from threading import Lock
-from time import monotonic, perf_counter
+# from time import monotonic, perf_counter
+from time import perf_counter, time
 
 
 import json
@@ -65,7 +66,120 @@ class Dispatcher:
         }
 
         self._server_state_lock = Lock()
+        self._server_state_file_lock = Lock()
         self._server_event_lock = Lock()
+
+        self._server_state_path = (
+            self.workdir.root
+            / "server_state.json"
+        )
+
+        self._load_server_state()
+
+    def _save_server_state(
+        self,
+    ) -> None:
+        with self._server_state_lock:
+            state = {
+                server.name: {
+                    "consecutive_failures": (
+                        self._server_failures[
+                            server.name
+                        ]
+                    ),
+                    "cooldown_until": (
+                        datetime.fromtimestamp(
+                            self._server_cooldown_until[
+                                server.name
+                            ],
+                            tz=timezone.utc,
+                        ).isoformat()
+                        if self._server_cooldown_until[
+                            server.name
+                        ] > 0
+                        else None
+                    ),
+                }
+                for server in self.servers
+            }
+
+        with self._server_state_file_lock:
+
+            self._server_state_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            temporary_path = (
+                self._server_state_path
+                .with_suffix(".json.tmp")
+            )
+
+            temporary_path.write_text(
+                json.dumps(
+                    state,
+                    indent=2,
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            temporary_path.replace(
+                self._server_state_path
+            )
+
+
+    def _load_server_state(
+        self,
+    ) -> None:
+        if not self._server_state_path.exists():
+            return
+
+        state = json.loads(
+            self._server_state_path.read_text(
+                encoding="utf-8",
+            )
+        )
+
+        now = time()
+
+        with self._server_state_lock:
+            for server in self.servers:
+                server_state = state.get(
+                    server.name,
+                    {},
+                )
+
+                failures = int(
+                    server_state.get(
+                        "consecutive_failures",
+                        0,
+                    )
+                )
+
+                cooldown_text = server_state.get(
+                    "cooldown_until"
+                )
+
+                cooldown_until = 0.0
+
+                if cooldown_text:
+                    cooldown_until = (
+                        datetime.fromisoformat(
+                            cooldown_text
+                        ).timestamp()
+                    )
+
+                if cooldown_until <= now:
+                    cooldown_until = 0.0
+
+                self._server_failures[
+                    server.name
+                ] = failures
+
+                self._server_cooldown_until[
+                    server.name
+                ] = cooldown_until
 
     def run_once(self) -> int:
         enabled_servers = [
@@ -297,7 +411,7 @@ class Dispatcher:
                 ]
             )
 
-            if monotonic() >= cooldown_until:
+            if time() >= cooldown_until:
                 return True
 
             return False
@@ -325,6 +439,8 @@ class Dispatcher:
             self._server_cooldown_until[
                 server.name
             ] = 0.0
+
+        self._save_server_state()
 
         if recovered:
             self._write_server_event(
@@ -358,11 +474,13 @@ class Dispatcher:
                 self._server_cooldown_until[
                     server.name
                 ] = (
-                    monotonic()
+                    time()
                     + self.server_cooldown_seconds
                 )
 
                 entered_cooldown = True
+
+        self._save_server_state()
 
         self._write_server_event(
             "server_failure",
