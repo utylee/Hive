@@ -81,6 +81,7 @@ manifest에 server_name 명시
 - [x] SSH returncode 255 재시도
 - [x] 서버 환경 preflight 검사
 - [x] 실패 작업을 같은 실행 안에서 다른 서버로 자동 재투입
+- [x] Comfy preflight 502/503/504 재시도
 
 ---
 

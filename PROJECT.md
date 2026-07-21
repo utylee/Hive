@@ -348,6 +348,8 @@ HTTP는 Comfy 실행에 사용한다.
 - Automatic retry on another server within the same dispatcher run
 - Failed server exclusion per job
 - Real E2E verified: m5 failure → ccy2 completion
+- Retry transient Comfy preflight failures
+- Real E2E verified: HTTP 502 → retry → HTTP 200
 
 아직 남은 문제:
 
