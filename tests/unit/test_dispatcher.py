@@ -549,3 +549,85 @@ def test_server_enters_cooldown_after_repeated_failures(
         ]
         > 0
     )
+
+def test_server_events_are_written(
+    tmp_path,
+):
+    jobs_dir = tmp_path / "jobs"
+    work_root = tmp_path / "work"
+
+    jobs_dir.mkdir()
+
+    server = Server(
+        name="server-a",
+        ssh_alias="server-a",
+        worker_root="/tmp/hive_jobs",
+        comfy_url="http://server-a",
+        comfy_input_batches="/tmp/input",
+        comfy_output_dir="/tmp/output",
+        hive_root="/tmp/Hive",
+        hive_python="/tmp/Hive/.venv/bin/python",
+        enabled=True,
+        profile={},
+    )
+
+    dispatcher = Dispatcher(
+        jobs_dir=jobs_dir,
+        work_root=work_root,
+        project="test",
+        job_type="comfy",
+        servers=[server],
+        server_failure_threshold=2,
+        server_cooldown_seconds=60.0,
+    )
+
+    dispatcher._record_server_failure(server)
+    dispatcher._record_server_failure(server)
+    dispatcher._record_server_success(server)
+
+    event_path = (
+        work_root / "server_events.jsonl"
+    )
+
+    records = [
+        json.loads(line)
+        for line in event_path.read_text(
+            encoding="utf-8",
+        ).splitlines()
+    ]
+
+    assert [
+        record["event"]
+        for record in records
+    ] == [
+        "server_failure",
+        "server_failure",
+        "server_cooldown",
+        "server_recovered",
+    ]
+
+    assert records[0][
+        "consecutive_failures"
+    ] == 1
+
+    assert records[1][
+        "consecutive_failures"
+    ] == 2
+
+    assert records[2][
+        "cooldown_seconds"
+    ] == 60.0
+
+    assert records[3][
+        "previous_failures"
+    ] == 2
+
+    assert all(
+        record["server"] == "server-a"
+        for record in records
+    )
+
+    assert all(
+        "timestamp" in record
+        for record in records
+    )

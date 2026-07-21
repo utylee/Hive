@@ -65,6 +65,7 @@ class Dispatcher:
         }
 
         self._server_state_lock = Lock()
+        self._server_event_lock = Lock()
 
     def run_once(self) -> int:
         enabled_servers = [
@@ -247,6 +248,44 @@ class Dispatcher:
 
         return restored
 
+    def _write_server_event(
+        self,
+        event: str,
+        server,
+        **details,
+    ) -> None:
+        record = {
+            "timestamp": datetime.now(
+                timezone.utc,
+            ).isoformat(),
+            "event": event,
+            "server": server.name,
+            **details,
+        }
+
+        event_path = (
+            self.workdir.root
+            / "server_events.jsonl"
+        )
+
+        with self._server_event_lock:
+            event_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            with event_path.open(
+                "a",
+                encoding="utf-8",
+            ) as file:
+                file.write(
+                    json.dumps(
+                        record,
+                        ensure_ascii=False,
+                    )
+                    + "\n"
+                )
+
     def _server_is_available(
         self,
         server,
@@ -267,7 +306,18 @@ class Dispatcher:
         self,
         server,
     ) -> None:
+        recovered = False
+        previous_failures = 0
+
         with self._server_state_lock:
+            previous_failures = (
+                self._server_failures[
+                    server.name
+                ]
+            )
+
+            recovered = previous_failures > 0
+
             self._server_failures[
                 server.name
             ] = 0
@@ -276,10 +326,19 @@ class Dispatcher:
                 server.name
             ] = 0.0
 
+        if recovered:
+            self._write_server_event(
+                "server_recovered",
+                server,
+                previous_failures=previous_failures,
+            )
+
     def _record_server_failure(
         self,
         server,
     ) -> None:
+        entered_cooldown = False
+
         with self._server_state_lock:
             failures = (
                 self._server_failures[
@@ -302,6 +361,24 @@ class Dispatcher:
                     monotonic()
                     + self.server_cooldown_seconds
                 )
+
+                entered_cooldown = True
+
+        self._write_server_event(
+            "server_failure",
+            server,
+            consecutive_failures=failures,
+        )
+
+        if entered_cooldown:
+            self._write_server_event(
+                "server_cooldown",
+                server,
+                consecutive_failures=failures,
+                cooldown_seconds=(
+                    self.server_cooldown_seconds
+                ),
+            )
 
 
     def _server_worker(
