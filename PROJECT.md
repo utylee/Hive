@@ -350,6 +350,13 @@ HTTP는 Comfy 실행에 사용한다.
 - Real E2E verified: m5 failure → ccy2 completion
 - Retry transient Comfy preflight failures
 - Real E2E verified: HTTP 502 → retry → HTTP 200
+- In-memory server failure tracking
+- Automatic server cooldown after repeated failures
+- Server recovery after a successful job
+- Thread-safe server event logging to `server_events.jsonl`
+- Server status summary via `--server-status`
+- Active cooldown and remaining time display
+- Recent event inspection via `--server-events N`
 
 아직 남은 문제:
 

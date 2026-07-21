@@ -238,6 +238,28 @@
 - requests=2, ok=True 확인
 - 일시적인 프록시 오류로 정상 서버가 즉시 제외되는 문제 완화
 
+## 2026-07-21 Server Monitoring and Cooldown
+
+- 서버별 연속 실패 횟수 추적 추가
+- 서버가 연속 2회 실패하면 기본 60초 cooldown 적용
+- cooldown 중인 서버는 새 작업 배정에서 제외
+- 작업 성공 시 연속 실패 횟수와 cooldown 상태 초기화
+- 서버 상태 이벤트를 `work_root/server_events.jsonl`에 JSON Lines 형식으로 기록
+  - `server_failure`
+  - `server_cooldown`
+  - `server_recovered`
+- `--server-status` 명령 추가
+  - 서버별 누적 실패 횟수
+  - cooldown 횟수
+  - 복구 횟수
+  - 마지막 이벤트와 시각
+  - 현재 cooldown 활성 여부
+  - cooldown 남은 시간
+- `--server-events N` 명령 추가
+  - 최근 서버 이벤트 N개를 시간순으로 출력
+- unit test로 연속 실패, cooldown 진입, 복구, 이벤트 로그 기록 검증
+- 샘플 JSONL 로그로 상태 요약 및 최근 이벤트 출력 검증
+
 결과:
 
 - m5: failed, 1.385s

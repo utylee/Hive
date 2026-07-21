@@ -82,6 +82,13 @@ manifest에 server_name 명시
 - [x] 서버 환경 preflight 검사
 - [x] 실패 작업을 같은 실행 안에서 다른 서버로 자동 재투입
 - [x] Comfy preflight 502/503/504 재시도
+- [x] 서버별 연속 실패 횟수 추적
+- [x] 반복 실패 서버 cooldown 처리
+- [x] 성공 시 서버 실패 상태 초기화
+- [x] 서버 실패·cooldown·복구 이벤트 로그 기록
+- [x] 서버 상태 요약 CLI 추가
+- [x] 현재 cooldown 상태와 남은 시간 표시
+- [x] 최근 서버 이벤트 조회 기능 추가
 
 ---
 
