@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import json
 from collections import defaultdict
+from datetime import datetime, timezone
 
 from hive.core.config import load_servers
 from hive.dispatcher.dispatcher import Dispatcher
@@ -94,6 +95,8 @@ def main() -> int:
                 "recoveries": 0,
                 "last_event": None,
                 "last_timestamp": None,
+                "cooldown_started_at": None,
+                "cooldown_seconds": 0.0,
             }
         )
 
@@ -109,12 +112,27 @@ def main() -> int:
 
             server_stats = stats[server_name]
 
+
             if event == "server_failure":
                 server_stats["failures"] += 1
+
             elif event == "server_cooldown":
                 server_stats["cooldowns"] += 1
+                server_stats["cooldown_started_at"] = (
+                    record.get("timestamp")
+                )
+                server_stats["cooldown_seconds"] = float(
+                    record.get(
+                        "cooldown_seconds",
+                        0.0,
+                    )
+                )
+
             elif event == "server_recovered":
                 server_stats["recoveries"] += 1
+                server_stats["cooldown_started_at"] = None
+                server_stats["cooldown_seconds"] = 0.0
+
 
             server_stats["last_event"] = event
             server_stats["last_timestamp"] = (
@@ -124,14 +142,47 @@ def main() -> int:
         for server_name in sorted(stats):
             server_stats = stats[server_name]
 
+            cooldown_active = False
+            cooldown_remaining = 0.0
+
+            cooldown_started_at = server_stats[
+                "cooldown_started_at"
+            ]
+
+            if cooldown_started_at:
+                started = datetime.fromisoformat(
+                    cooldown_started_at
+                )
+
+                now = datetime.now(timezone.utc)
+
+                elapsed = (
+                    now - started
+                ).total_seconds()
+
+                cooldown_remaining = max(
+                    0.0,
+                    server_stats["cooldown_seconds"]
+                    - elapsed,
+                )
+
+                cooldown_active = (
+                    cooldown_remaining > 0
+                )
+
+
             print(
                 f"{server_name}: "
                 f"failures={server_stats['failures']} "
                 f"cooldowns={server_stats['cooldowns']} "
                 f"recoveries={server_stats['recoveries']} "
+                f"cooldown_active={cooldown_active} "
+                f"cooldown_remaining="
+                f"{cooldown_remaining:.1f}s "
                 f"last={server_stats['last_event']} "
                 f"at={server_stats['last_timestamp']}"
             )
+
 
         return 0
 
