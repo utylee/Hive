@@ -223,3 +223,15 @@
   - `import hive`
   - ComfyUI 응답
 - 5개 서버 모두 preflight 통과
+
+## 2026-07-21 Automatic Cross-Server Retry E2E
+
+- 실패 작업을 같은 실행 안에서 다른 서버로 자동 재투입
+- m5의 Python 경로를 의도적으로 잘못 설정해 실패 유도
+- m5 실패 후 ccy2가 자동으로 작업을 이어받아 완료
+- 수동 `--retry-failed` 실행 없이 복구되는 흐름 검증
+
+결과:
+
+- m5: failed, 1.385s
+- ccy2: completed, 2886.519s

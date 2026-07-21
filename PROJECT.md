@@ -345,6 +345,9 @@ HTTP는 Comfy 실행에 사용한다.
 - Automatic Hive package sync before remote dispatch
 - Retry transient SSH/rsync failures
 - Server preflight command for SSH, Python, Hive, and ComfyUI
+- Automatic retry on another server within the same dispatcher run
+- Failed server exclusion per job
+- Real E2E verified: m5 failure → ccy2 completion
 
 아직 남은 문제:
 
