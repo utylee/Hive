@@ -474,7 +474,8 @@ def test_dispatcher_retries_failed_job_on_another_server(
         / f"{source.name}.retry.json"
     ).exists()
 
-def test_server_enters_cooldown_after_repeated_failures(
+
+def test_server_rejoins_after_cooldown(
     tmp_path,
     monkeypatch,
 ):
@@ -530,25 +531,19 @@ def test_server_enters_cooldown_after_repeated_failures(
             "workflow": str(workflow),
         },
         server_failure_threshold=2,
-        server_cooldown_seconds=60.0,
+        server_cooldown_seconds=0.01,
     )
 
     completed = dispatcher.run_once()
 
     assert completed == 0
-    assert len(calls) == 2
+    assert len(calls) == 3
 
     assert (
         dispatcher._server_failures["server-a"]
-        == 2
+        == 3
     )
 
-    assert (
-        dispatcher._server_cooldown_until[
-            "server-a"
-        ]
-        > 0
-    )
 
 def test_server_events_are_written(
     tmp_path,

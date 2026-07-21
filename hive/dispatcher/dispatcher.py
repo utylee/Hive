@@ -6,8 +6,7 @@ from pathlib import Path
 from queue import Empty, Queue
 
 from threading import Lock
-# from time import monotonic, perf_counter
-from time import perf_counter, time
+from time import perf_counter, sleep, time
 
 
 import json
@@ -416,6 +415,22 @@ class Dispatcher:
 
             return False
 
+    def _server_cooldown_remaining(
+        self,
+        server,
+    ) -> float:
+        with self._server_state_lock:
+            cooldown_until = (
+                self._server_cooldown_until[
+                    server.name
+                ]
+            )
+
+        return max(
+            0.0,
+            cooldown_until - time(),
+        )
+
     def _record_server_success(
         self,
         server,
@@ -525,7 +540,16 @@ class Dispatcher:
                         failed_servers,
                     )
                 )
-                break
+
+                remaining = self._server_cooldown_remaining(
+                    server
+                )
+
+                if remaining > 0:
+                    sleep(remaining)
+
+                continue
+
 
             if self._process_source(
                 source,
