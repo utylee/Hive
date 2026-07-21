@@ -1,6 +1,7 @@
 from hive.server import Server
 
 from hive.dispatcher import preflight
+from email.message import Message
 
 
 class DummyResponse:
@@ -207,3 +208,103 @@ def test_filter_healthy_servers(
 
     assert results[0].ok is True
     assert results[1].ok is False
+
+def test_check_server_retries_comfy_502(
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        preflight.remote,
+        "exec",
+        lambda alias, command: None,
+    )
+
+    responses = iter(
+        [
+            preflight.HTTPError(
+                url="http://comfy.example",
+                code=502,
+                msg="Bad Gateway",
+                hdrs=Message(),
+                fp=None,
+            ),
+            DummyResponse(),
+        ]
+    )
+
+    calls = []
+
+    def fake_urlopen(url, timeout):
+        calls.append((url, timeout))
+        result = next(responses)
+
+        if isinstance(
+            result,
+            Exception,
+        ):
+            raise result
+
+        return result
+
+    monkeypatch.setattr(
+        preflight,
+        "urlopen",
+        fake_urlopen,
+    )
+
+    monkeypatch.setattr(
+        preflight,
+        "sleep",
+        lambda _: None,
+    )
+
+    result = preflight.check_server(
+        make_server(),
+    )
+
+    assert result.ok is True
+    assert result.comfy_ok is True
+    assert len(calls) == 2
+
+def test_check_server_stops_after_comfy_retries(
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        preflight.remote,
+        "exec",
+        lambda alias, command: None,
+    )
+
+    calls = []
+
+    def fail_urlopen(url, timeout):
+        calls.append((url, timeout))
+
+        raise preflight.HTTPError(
+            url=url,
+            code=503,
+            msg="Service Unavailable",
+            hdrs=Message(),
+            fp=None,
+        )
+
+    monkeypatch.setattr(
+        preflight,
+        "urlopen",
+        fail_urlopen,
+    )
+
+    monkeypatch.setattr(
+        preflight,
+        "sleep",
+        lambda _: None,
+    )
+
+    result = preflight.check_server(
+        make_server(),
+    )
+
+    assert result.ok is False
+    assert result.comfy_ok is False
+    assert len(calls) == 3
+    assert result.error is not None
+    assert "HTTP Error 503" in result.error

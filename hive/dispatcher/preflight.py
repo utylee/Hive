@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+
 from dataclasses import dataclass
+from time import sleep
+from urllib.error import HTTPError
 from urllib.request import urlopen
 
 from hive.core import remote
@@ -30,6 +33,8 @@ def check_server(
     server: Server,
     *,
     timeout: float = 5.0,
+    comfy_retries: int = 2,
+    retry_delay: float = 0.5,
 ) -> PreflightResult:
     ssh_ok = False
     python_ok = False
@@ -58,11 +63,34 @@ def check_server(
         )
         hive_ok = True
 
-        with urlopen(
-            server.comfy_url,
-            timeout=timeout,
-        ) as response:
-            comfy_ok = 200 <= response.status < 500
+
+        for attempt in range(
+            comfy_retries + 1
+        ):
+            try:
+                with urlopen(
+                    server.comfy_url,
+                    timeout=timeout,
+                ) as response:
+                    comfy_ok = (
+                        200
+                        <= response.status
+                        < 500
+                    )
+
+                break
+
+            except HTTPError as exc:
+                retryable = (
+                    exc.code in {502, 503, 504}
+                    and attempt < comfy_retries
+                )
+
+                if not retryable:
+                    raise
+
+                sleep(retry_delay)
+
 
     except Exception as exc:
         return PreflightResult(
