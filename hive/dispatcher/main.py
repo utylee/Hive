@@ -23,6 +23,13 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--server-events",
+        type=int,
+        metavar="N",
+        help="Show the most recent N server events, then exit.",
+    )
+
+    parser.add_argument(
         "--server-status",
         action="store_true",
         help="Show server failure and cooldown events, then exit.",
@@ -78,6 +85,59 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+
+    if args.server_events is not None:
+        event_path = (
+            args.work_root / "server_events.jsonl"
+        )
+
+        if not event_path.exists():
+            print("No server event log found")
+            return 0
+
+        if args.server_events < 1:
+            raise ValueError(
+                "--server-events must be at least 1"
+            )
+
+        records = [
+            json.loads(line)
+            for line in event_path.read_text(
+                encoding="utf-8",
+            ).splitlines()
+            if line.strip()
+        ]
+
+        for record in records[
+            -args.server_events:
+        ]:
+            details = {
+                key: value
+                for key, value in record.items()
+                if key not in {
+                    "timestamp",
+                    "event",
+                    "server",
+                }
+            }
+
+            detail_text = " ".join(
+                f"{key}={value}"
+                for key, value in details.items()
+            )
+
+            print(
+                f"{record.get('timestamp')} "
+                f"{record.get('server')} "
+                f"{record.get('event')}"
+                + (
+                    f" {detail_text}"
+                    if detail_text
+                    else ""
+                )
+            )
+
+        return 0
 
     if args.server_status:
         event_path = (
