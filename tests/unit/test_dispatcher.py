@@ -473,3 +473,79 @@ def test_dispatcher_retries_failed_job_on_another_server(
         jobs_dir
         / f"{source.name}.retry.json"
     ).exists()
+
+def test_server_enters_cooldown_after_repeated_failures(
+    tmp_path,
+    monkeypatch,
+):
+    jobs_dir = tmp_path / "jobs"
+    work_root = tmp_path / "work"
+    workflow = tmp_path / "workflow.json"
+
+    jobs_dir.mkdir()
+    workflow.write_text(
+        "{}",
+        encoding="utf-8",
+    )
+
+    for index in range(3):
+        (
+            jobs_dir / f"segment-{index}.mp4"
+        ).write_bytes(b"video")
+
+    server = Server(
+        name="server-a",
+        ssh_alias="server-a",
+        worker_root="/tmp/hive_jobs",
+        comfy_url="http://server-a",
+        comfy_input_batches="/tmp/input",
+        comfy_output_dir="/tmp/output",
+        hive_root="/tmp/Hive",
+        hive_python="/tmp/Hive/.venv/bin/python",
+        enabled=True,
+        profile={},
+    )
+
+    calls = []
+
+    def fake_dispatch_remote_job(
+        server,
+        job_dir,
+    ):
+        calls.append(server.name)
+        raise RuntimeError("remote failure")
+
+    monkeypatch.setattr(
+        "hive.dispatcher.dispatcher.dispatch_remote_job",
+        fake_dispatch_remote_job,
+    )
+
+    dispatcher = Dispatcher(
+        jobs_dir=jobs_dir,
+        work_root=work_root,
+        project="test",
+        job_type="comfy",
+        servers=[server],
+        parameters={
+            "workflow": str(workflow),
+        },
+        server_failure_threshold=2,
+        server_cooldown_seconds=60.0,
+    )
+
+    completed = dispatcher.run_once()
+
+    assert completed == 0
+    assert len(calls) == 2
+
+    assert (
+        dispatcher._server_failures["server-a"]
+        == 2
+    )
+
+    assert (
+        dispatcher._server_cooldown_until[
+            "server-a"
+        ]
+        > 0
+    )

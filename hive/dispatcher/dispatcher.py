@@ -4,7 +4,10 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from queue import Empty, Queue
-from time import perf_counter
+
+from threading import Lock
+from time import monotonic, perf_counter
+
 
 import json
 import shutil
@@ -26,6 +29,8 @@ class Dispatcher:
         parameters=None,
         max_workers=None,
         max_retries=3,
+        server_failure_threshold=2,
+        server_cooldown_seconds=60.0,
     ):
         self.scanner = Scanner(jobs_dir)
         self.workdir = WorkDir(work_root)
@@ -42,6 +47,24 @@ class Dispatcher:
             ]
         )
         self.max_retries = max_retries
+        self.server_failure_threshold = (
+            server_failure_threshold
+        )
+        self.server_cooldown_seconds = (
+            server_cooldown_seconds
+        )
+
+        self._server_failures = {
+            server.name: 0
+            for server in servers
+        }
+
+        self._server_cooldown_until = {
+            server.name: 0.0
+            for server in servers
+        }
+
+        self._server_state_lock = Lock()
 
     def run_once(self) -> int:
         enabled_servers = [
@@ -224,6 +247,62 @@ class Dispatcher:
 
         return restored
 
+    def _server_is_available(
+        self,
+        server,
+    ) -> bool:
+        with self._server_state_lock:
+            cooldown_until = (
+                self._server_cooldown_until[
+                    server.name
+                ]
+            )
+
+            if monotonic() >= cooldown_until:
+                return True
+
+            return False
+
+    def _record_server_success(
+        self,
+        server,
+    ) -> None:
+        with self._server_state_lock:
+            self._server_failures[
+                server.name
+            ] = 0
+
+            self._server_cooldown_until[
+                server.name
+            ] = 0.0
+
+    def _record_server_failure(
+        self,
+        server,
+    ) -> None:
+        with self._server_state_lock:
+            failures = (
+                self._server_failures[
+                    server.name
+                ]
+                + 1
+            )
+
+            self._server_failures[
+                server.name
+            ] = failures
+
+            if (
+                failures
+                >= self.server_failure_threshold
+            ):
+                self._server_cooldown_until[
+                    server.name
+                ] = (
+                    monotonic()
+                    + self.server_cooldown_seconds
+                )
+
 
     def _server_worker(
         self,
@@ -243,12 +322,25 @@ class Dispatcher:
 
             source, failed_servers = job
 
+
+            if not self._server_is_available(server):
+                job_queue.put(
+                    (
+                        source,
+                        failed_servers,
+                    )
+                )
+                break
+
             if self._process_source(
                 source,
                 server,
                 failed_servers,
             ):
+                self._record_server_success(server)
                 completed += 1
+            else:
+                self._record_server_failure(server)
 
         return completed
 
