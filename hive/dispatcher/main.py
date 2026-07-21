@@ -144,8 +144,15 @@ def main() -> int:
             args.work_root / "server_events.jsonl"
         )
 
-        if not event_path.exists():
-            print("No server event log found")
+        state_path = (
+            args.work_root / "server_state.json"
+        )
+
+        if (
+            not event_path.exists()
+            and not state_path.exists()
+        ):
+            print("No server status data found")
             return 0
 
         stats = defaultdict(
@@ -160,81 +167,104 @@ def main() -> int:
             }
         )
 
-        for line in event_path.read_text(
-            encoding="utf-8",
-        ).splitlines():
-            if not line.strip():
-                continue
+        if event_path.exists():
+            for line in event_path.read_text(
+                encoding="utf-8",
+            ).splitlines():
+                if not line.strip():
+                    continue
 
-            record = json.loads(line)
-            server_name = record["server"]
-            event = record["event"]
+                record = json.loads(line)
+                server_name = record["server"]
+                event = record["event"]
 
-            server_stats = stats[server_name]
+                server_stats = stats[server_name]
 
 
-            if event == "server_failure":
-                server_stats["failures"] += 1
+                if event == "server_failure":
+                    server_stats["failures"] += 1
 
-            elif event == "server_cooldown":
-                server_stats["cooldowns"] += 1
-                server_stats["cooldown_started_at"] = (
+                elif event == "server_cooldown":
+                    server_stats["cooldowns"] += 1
+                    server_stats["cooldown_started_at"] = (
+                        record.get("timestamp")
+                    )
+                    server_stats["cooldown_seconds"] = float(
+                        record.get(
+                            "cooldown_seconds",
+                            0.0,
+                        )
+                    )
+
+                elif event == "server_recovered":
+                    server_stats["recoveries"] += 1
+                    server_stats["cooldown_started_at"] = None
+                    server_stats["cooldown_seconds"] = 0.0
+
+
+                server_stats["last_event"] = event
+                server_stats["last_timestamp"] = (
                     record.get("timestamp")
                 )
-                server_stats["cooldown_seconds"] = float(
-                    record.get(
-                        "cooldown_seconds",
-                        0.0,
-                    )
+
+        persisted_state = {}
+
+        if state_path.exists():
+            persisted_state = json.loads(
+                state_path.read_text(
+                    encoding="utf-8",
                 )
-
-            elif event == "server_recovered":
-                server_stats["recoveries"] += 1
-                server_stats["cooldown_started_at"] = None
-                server_stats["cooldown_seconds"] = 0.0
-
-
-            server_stats["last_event"] = event
-            server_stats["last_timestamp"] = (
-                record.get("timestamp")
             )
+
+            for server_name in persisted_state:
+                stats[server_name]
 
         for server_name in sorted(stats):
             server_stats = stats[server_name]
 
             cooldown_active = False
             cooldown_remaining = 0.0
+            
+            state = persisted_state.get(
+                server_name,
+                {},
+            )
 
-            cooldown_started_at = server_stats[
-                "cooldown_started_at"
-            ]
+            cooldown_until_text = state.get(
+                "cooldown_until"
+            )
 
-            if cooldown_started_at:
-                started = datetime.fromisoformat(
-                    cooldown_started_at
+            if cooldown_until_text:
+                cooldown_until = datetime.fromisoformat(
+                    cooldown_until_text
                 )
 
                 now = datetime.now(timezone.utc)
 
-                elapsed = (
-                    now - started
-                ).total_seconds()
-
                 cooldown_remaining = max(
                     0.0,
-                    server_stats["cooldown_seconds"]
-                    - elapsed,
+                    (
+                        cooldown_until - now
+                    ).total_seconds(),
                 )
 
                 cooldown_active = (
                     cooldown_remaining > 0
                 )
 
+            consecutive_failures = int(
+                state.get(
+                    "consecutive_failures",
+                    0,
+                )
+            )
 
             print(
                 f"{server_name}: "
                 f"failures={server_stats['failures']} "
                 f"cooldowns={server_stats['cooldowns']} "
+                f"consecutive_failures="
+                f"{consecutive_failures} "
                 f"recoveries={server_stats['recoveries']} "
                 f"cooldown_active={cooldown_active} "
                 f"cooldown_remaining="
