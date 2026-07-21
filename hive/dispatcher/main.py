@@ -7,7 +7,10 @@ import json
 
 from hive.core.config import load_servers
 from hive.dispatcher.dispatcher import Dispatcher
-from hive.dispatcher.preflight import check_server
+from hive.dispatcher.preflight import (
+    check_server,
+    filter_healthy_servers,
+)
 
 MAX_RETRIES = 3
 
@@ -214,6 +217,26 @@ def main() -> int:
                 all_ok = False
 
         return 0 if all_ok else 1
+
+    healthy_servers, preflight_results = (
+        filter_healthy_servers(servers)
+    )
+
+    for result in preflight_results:
+        if result.ok:
+            continue
+
+        print(
+            f"Skipping {result.server_name}: "
+            f"{result.error or 'preflight failed'}"
+        )
+
+    servers = healthy_servers
+
+    if not servers:
+        raise RuntimeError(
+            "No healthy servers available"
+        )
 
     if not args.workflow.exists():
         raise FileNotFoundError(

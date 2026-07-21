@@ -83,3 +83,24 @@ def check_server(
         hive_ok=hive_ok,
         comfy_ok=comfy_ok,
     )
+
+def filter_healthy_servers(
+    servers: list[Server],
+    *,
+    timeout: float = 5.0,
+) -> tuple[list[Server], list[PreflightResult]]:
+    healthy_servers = []
+    results = []
+
+    for server in servers:
+        result = check_server(
+            server,
+            timeout=timeout,
+        )
+
+        results.append(result)
+
+        if result.ok:
+            healthy_servers.append(server)
+
+    return healthy_servers, results

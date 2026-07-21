@@ -140,3 +140,70 @@ def test_check_server_reports_comfy_failure(
     assert result.error == (
         "TimeoutError: comfy timeout"
     )
+
+def test_filter_healthy_servers(
+    monkeypatch,
+):
+    servers = [
+        make_server(),
+        Server(
+            name="ccy2",
+            ssh_alias="ccy2",
+            worker_root="/tmp/hive_jobs",
+            comfy_url="http://comfy2.example",
+            comfy_input_batches="/tmp/input",
+            comfy_output_dir="/tmp/output",
+            hive_root="/home/utylee/temp/Hive",
+            hive_python=(
+                "/home/utylee/temp/Hive/"
+                ".venv/bin/python"
+            ),
+            enabled=True,
+            profile={},
+        ),
+    ]
+
+    def fake_check_server(
+        server,
+        *,
+        timeout=5.0,
+    ):
+        return preflight.PreflightResult(
+            server_name=server.name,
+            ssh_ok=True,
+            python_ok=True,
+            hive_ok=True,
+            comfy_ok=(
+                server.name == "m5"
+            ),
+            error=(
+                None
+                if server.name == "m5"
+                else "TimeoutError: comfy timeout"
+            ),
+        )
+
+    monkeypatch.setattr(
+        preflight,
+        "check_server",
+        fake_check_server,
+    )
+
+    healthy, results = (
+        preflight.filter_healthy_servers(
+            servers,
+        )
+    )
+
+    assert [
+        server.name
+        for server in healthy
+    ] == ["m5"]
+
+    assert [
+        result.server_name
+        for result in results
+    ] == ["m5", "ccy2"]
+
+    assert results[0].ok is True
+    assert results[1].ok is False

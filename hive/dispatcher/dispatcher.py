@@ -417,6 +417,7 @@ class Dispatcher:
 
                 source_retry_path.unlink()
 
+
             shutil.move(
                 str(source),
                 failed_dir / source.name,
