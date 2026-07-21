@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import shutil
 import json
+from collections import defaultdict
 
 from hive.core.config import load_servers
 from hive.dispatcher.dispatcher import Dispatcher
@@ -12,11 +13,18 @@ from hive.dispatcher.preflight import (
     filter_healthy_servers,
 )
 
+
 MAX_RETRIES = 3
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Dispatch Hive jobs to remote workers.",
+    )
+
+    parser.add_argument(
+        "--server-status",
+        action="store_true",
+        help="Show server failure and cooldown events, then exit.",
     )
 
     parser.add_argument(
@@ -69,6 +77,63 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+
+    if args.server_status:
+        event_path = (
+            args.work_root / "server_events.jsonl"
+        )
+
+        if not event_path.exists():
+            print("No server event log found")
+            return 0
+
+        stats = defaultdict(
+            lambda: {
+                "failures": 0,
+                "cooldowns": 0,
+                "recoveries": 0,
+                "last_event": None,
+                "last_timestamp": None,
+            }
+        )
+
+        for line in event_path.read_text(
+            encoding="utf-8",
+        ).splitlines():
+            if not line.strip():
+                continue
+
+            record = json.loads(line)
+            server_name = record["server"]
+            event = record["event"]
+
+            server_stats = stats[server_name]
+
+            if event == "server_failure":
+                server_stats["failures"] += 1
+            elif event == "server_cooldown":
+                server_stats["cooldowns"] += 1
+            elif event == "server_recovered":
+                server_stats["recoveries"] += 1
+
+            server_stats["last_event"] = event
+            server_stats["last_timestamp"] = (
+                record.get("timestamp")
+            )
+
+        for server_name in sorted(stats):
+            server_stats = stats[server_name]
+
+            print(
+                f"{server_name}: "
+                f"failures={server_stats['failures']} "
+                f"cooldowns={server_stats['cooldowns']} "
+                f"recoveries={server_stats['recoveries']} "
+                f"last={server_stats['last_event']} "
+                f"at={server_stats['last_timestamp']}"
+            )
+
+        return 0
 
     if args.restore_quarantine:
         quarantine_dir = args.jobs_dir / "quarantine"
