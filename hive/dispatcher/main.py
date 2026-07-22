@@ -23,6 +23,12 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--reset-server-state",
+        action="store_true",
+        help="Clear persisted server failure and cooldown state, then exit.",
+    )
+
+    parser.add_argument(
         "--server-events",
         type=int,
         metavar="N",
@@ -85,6 +91,24 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+
+    if args.reset_server_state:
+        state_path = (
+            args.work_root / "server_state.json"
+        )
+
+        if not state_path.exists():
+            print("No persisted server state found")
+            return 0
+
+        state_path.unlink()
+
+        print(
+            f"Cleared persisted server state: "
+            f"{state_path}"
+        )
+
+        return 0
 
     if args.server_events is not None:
         event_path = (
