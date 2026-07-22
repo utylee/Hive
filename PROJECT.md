@@ -357,6 +357,40 @@ HTTP는 Comfy 실행에 사용한다.
 - Server status summary via `--server-status`
 - Active cooldown and remaining time display
 - Recent event inspection via `--server-events N`
+- 성공 및 실패 경로별 manifest 상태 저장
+- 공용 동적 작업 큐
+- 활성화된 서버마다 하나의 워커 스레드 실행
+- 빠른 서버가 더 많은 작업을 자동으로 가져가는 구조
+- Manifest 실행 메타데이터 기록
+  server_name
+  started_at
+  finished_at
+  elapsed_seconds
+  status
+- 10개 작업과 5개 서버를 이용한 실제 E2E 테스트 성공
+- 서버별 Hive 루트 경로 지원
+- 원격 작업 실행 전 Hive 패키지 자동 동기화
+- 일시적인 SSH/rsync 오류 자동 재시도
+- SSH, Python, Hive, ComfyUI 상태를 확인하는 서버 preflight 명령
+- 같은 dispatcher 실행 안에서 실패한 작업을 다른 서버로 자동 재시도
+- 작업별 실패 서버 재배정 제외
+- 실제 E2E 검증 완료: m5 실패 → ccy2 완료
+- 일시적인 Comfy preflight 오류 자동 재시도
+- 실제 E2E 검증 완료: HTTP 502 → 재시도 → HTTP 200
+- 메모리 기반 서버 실패 횟수 추적
+- 반복 실패 서버 자동 cooldown 처리
+- 작업 성공 시 서버 실패 상태 초기화 및 복구
+- server_events.jsonl에 스레드 안전 방식으로 서버 이벤트 기록
+- --server-status를 통한 서버 상태 요약
+- 현재 cooldown 활성 여부와 남은 시간 표시
+- --server-events N을 통한 최근 서버 이벤트 조회
+
+- 서버별 연속 실패 횟수와 cooldown 상태 영속화
+- 서버 상태 파일의 원자적·스레드 안전 저장
+- dispatcher 재시작 후 서버 상태 자동 복원
+- cooldown 종료 후 서버 자동 재참여
+- `--server-status`에서 저장된 현재 상태 표시
+- `--reset-server-state`를 통한 서버 상태 수동 초기화
 
 아직 남은 문제:
 

@@ -260,6 +260,16 @@
 - unit test로 연속 실패, cooldown 진입, 복구, 이벤트 로그 기록 검증
 - 샘플 JSONL 로그로 상태 요약 및 최근 이벤트 출력 검증
 
+## 2026-07-22 Persistent Server State and Recovery
+
+- 서버별 연속 실패 횟수와 cooldown 종료 시각을 `server_state.json`에 저장
+- dispatcher 재시작 후에도 실패 횟수와 cooldown 상태 복원
+- 만료된 cooldown은 로드 시 자동 해제
+- 병렬 상태 저장 시 임시 파일 충돌 방지를 위한 전용 Lock 추가
+- `--server-status`가 이벤트 로그와 저장 상태를 함께 읽도록 개선
+- cooldown 종료 후 같은 dispatcher 실행 안에서 서버가 자동 복귀
+- 저장된 서버 상태를 수동 초기화하는 `--reset-server-state` 명령 추가
+
 결과:
 
 - m5: failed, 1.385s
