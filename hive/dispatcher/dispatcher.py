@@ -134,16 +134,85 @@ class Dispatcher:
         if not self._server_state_path.exists():
             return
 
-
         try:
             state = json.loads(
                 self._server_state_path.read_text(
                     encoding="utf-8",
                 )
             )
+
+            if not isinstance(state, dict):
+                raise TypeError(
+                    "Server state must be an object"
+                )
+
+            now = time()
+            loaded_failures: dict[str, int] = {}
+            loaded_cooldowns: dict[str, float] = {}
+
+            for server in self.servers:
+                server_state = state.get(
+                    server.name,
+                    {},
+                )
+
+                if not isinstance(
+                    server_state,
+                    dict,
+                ):
+                    raise TypeError(
+                        "Server entry must be an object"
+                    )
+
+                failures = int(
+                    server_state.get(
+                        "consecutive_failures",
+                        0,
+                    )
+                )
+
+                if failures < 0:
+                    raise ValueError(
+                        "Failure count cannot be negative"
+                    )
+
+                cooldown_text = server_state.get(
+                    "cooldown_until"
+                )
+
+                cooldown_until = 0.0
+
+                if cooldown_text:
+                    if not isinstance(
+                        cooldown_text,
+                        str,
+                    ):
+                        raise TypeError(
+                            "Cooldown time must be a string"
+                        )
+
+                    cooldown_until = (
+                        datetime.fromisoformat(
+                            cooldown_text
+                        ).timestamp()
+                    )
+
+                if cooldown_until <= now:
+                    cooldown_until = 0.0
+
+                loaded_failures[
+                    server.name
+                ] = failures
+
+                loaded_cooldowns[
+                    server.name
+                ] = cooldown_until
+
         except (
             json.JSONDecodeError,
             OSError,
+            TypeError,
+            ValueError,
         ):
             corrupt_path = (
                 self._server_state_path.with_suffix(
@@ -157,47 +226,13 @@ class Dispatcher:
 
             return
 
-
-
-        now = time()
-
         with self._server_state_lock:
-            for server in self.servers:
-                server_state = state.get(
-                    server.name,
-                    {},
-                )
-
-                failures = int(
-                    server_state.get(
-                        "consecutive_failures",
-                        0,
-                    )
-                )
-
-                cooldown_text = server_state.get(
-                    "cooldown_until"
-                )
-
-                cooldown_until = 0.0
-
-                if cooldown_text:
-                    cooldown_until = (
-                        datetime.fromisoformat(
-                            cooldown_text
-                        ).timestamp()
-                    )
-
-                if cooldown_until <= now:
-                    cooldown_until = 0.0
-
-                self._server_failures[
-                    server.name
-                ] = failures
-
-                self._server_cooldown_until[
-                    server.name
-                ] = cooldown_until
+            self._server_failures.update(
+                loaded_failures
+            )
+            self._server_cooldown_until.update(
+                loaded_cooldowns
+            )
 
     def run_once(self) -> int:
         enabled_servers = [
@@ -236,6 +271,8 @@ class Dispatcher:
                 break
 
         return completed
+
+
     
     def _run_round(
         self,
