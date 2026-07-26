@@ -24,9 +24,15 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument(
         "--reset-server-state",
-        action="store_true",
-        help="Clear persisted server failure and cooldown state, then exit.",
+        nargs="?",
+        const="all",
+        metavar="SERVER",
+        help=(
+            "Clear persisted state for one server "
+            "or all servers, then exit."
+        ),
     )
+
 
     parser.add_argument(
         "--server-events",
@@ -92,7 +98,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
 
-    if args.reset_server_state:
+
+    if args.reset_server_state is not None:
         state_path = (
             args.work_root / "server_state.json"
         )
@@ -101,14 +108,57 @@ def main() -> int:
             print("No persisted server state found")
             return 0
 
-        state_path.unlink()
+        server_name = args.reset_server_state
+
+        if server_name == "all":
+            state_path.unlink()
+
+            print(
+                f"Cleared persisted server state: "
+                f"{state_path}"
+            )
+
+            return 0
+
+        state = json.loads(
+            state_path.read_text(
+                encoding="utf-8",
+            )
+        )
+
+        if server_name not in state:
+            print(
+                "No persisted state found for "
+                f"server: {server_name}"
+            )
+            return 0
+
+        del state[server_name]
+
+        temporary_path = state_path.with_suffix(
+            ".json.tmp"
+        )
+
+        temporary_path.write_text(
+            json.dumps(
+                state,
+                indent=2,
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+
+        temporary_path.replace(state_path)
 
         print(
-            f"Cleared persisted server state: "
-            f"{state_path}"
+            "Cleared persisted state for server: "
+            f"{server_name}"
         )
 
         return 0
+
+
+
 
     if args.server_events is not None:
         event_path = (
