@@ -1,4 +1,5 @@
 import sys
+import json
 
 from hive.dispatcher.main import main
 
@@ -80,4 +81,70 @@ def test_reset_server_state_without_file(
     assert (
         captured.out.strip()
         == "No persisted server state found"
+    )
+
+def test_reset_server_state_for_one_server(
+    tmp_path,
+    monkeypatch,
+    capsys,
+):
+    jobs_dir = tmp_path / "jobs"
+    work_root = tmp_path / "work"
+
+    jobs_dir.mkdir()
+    work_root.mkdir()
+
+    state_path = (
+        work_root / "server_state.json"
+    )
+
+    state_path.write_text(
+        """
+{
+  "m5": {
+    "consecutive_failures": 2,
+    "cooldown_until": "2099-01-01T00:00:00+00:00"
+  },
+  "ccy2": {
+    "consecutive_failures": 1,
+    "cooldown_until": null
+  }
+}
+""".strip(),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "hive-dispatcher",
+            str(jobs_dir),
+            "--work-root",
+            str(work_root),
+            "--reset-server-state",
+            "m5",
+        ],
+    )
+
+    result = main()
+    captured = capsys.readouterr()
+
+    assert result == 0
+
+    state = json.loads(
+        state_path.read_text(
+            encoding="utf-8",
+        )
+    )
+
+    assert "m5" not in state
+    assert "ccy2" in state
+
+    assert (
+        captured.out.strip()
+        == (
+            "Cleared persisted state "
+            "for server: m5"
+        )
     )
