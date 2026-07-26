@@ -120,11 +120,35 @@ def main() -> int:
 
             return 0
 
-        state = json.loads(
-            state_path.read_text(
-                encoding="utf-8",
+        try:
+            state = json.loads(
+                state_path.read_text(
+                    encoding="utf-8",
+                )
             )
-        )
+
+            if not isinstance(state, dict):
+                raise TypeError(
+                    "Server state must be an object"
+                )
+
+        except (
+            json.JSONDecodeError,
+            OSError,
+            TypeError,
+        ):
+            corrupt_path = state_path.with_suffix(
+                ".json.corrupt"
+            )
+
+            state_path.replace(corrupt_path)
+
+            print(
+                "Persisted server state was corrupt "
+                f"and preserved as: {corrupt_path}"
+            )
+
+            return 0
 
         if server_name not in state:
             print(

@@ -209,3 +209,60 @@ def test_reset_unknown_server_preserves_state(
             "server: unknown-server"
         )
     )
+
+def test_reset_server_state_preserves_corrupt_file(
+    tmp_path,
+    monkeypatch,
+    capsys,
+):
+    jobs_dir = tmp_path / "jobs"
+    work_root = tmp_path / "work"
+
+    jobs_dir.mkdir()
+    work_root.mkdir()
+
+    state_path = (
+        work_root / "server_state.json"
+    )
+
+    state_path.write_text(
+        "{invalid json",
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "hive-dispatcher",
+            str(jobs_dir),
+            "--work-root",
+            str(work_root),
+            "--reset-server-state",
+            "m5",
+        ],
+    )
+
+    result = main()
+    captured = capsys.readouterr()
+
+    corrupt_path = (
+        work_root
+        / "server_state.json.corrupt"
+    )
+
+    assert result == 0
+    assert not state_path.exists()
+    assert corrupt_path.exists()
+
+    assert (
+        corrupt_path.read_text(
+            encoding="utf-8",
+        )
+        == "{invalid json"
+    )
+
+    assert (
+        "Persisted server state was corrupt"
+        in captured.out
+    )
