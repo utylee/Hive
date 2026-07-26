@@ -134,11 +134,30 @@ class Dispatcher:
         if not self._server_state_path.exists():
             return
 
-        state = json.loads(
-            self._server_state_path.read_text(
-                encoding="utf-8",
+
+        try:
+            state = json.loads(
+                self._server_state_path.read_text(
+                    encoding="utf-8",
+                )
             )
-        )
+        except (
+            json.JSONDecodeError,
+            OSError,
+        ):
+            corrupt_path = (
+                self._server_state_path.with_suffix(
+                    ".json.corrupt"
+                )
+            )
+
+            self._server_state_path.replace(
+                corrupt_path
+            )
+
+            return
+
+
 
         now = time()
 

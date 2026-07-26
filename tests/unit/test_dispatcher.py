@@ -693,3 +693,73 @@ def test_server_state_persists_across_dispatcher_restart(
         second._server_is_available(server)
         is False
     )
+
+
+def test_corrupt_server_state_is_preserved_and_ignored(
+    tmp_path,
+):
+    jobs_dir = tmp_path / "jobs"
+    work_root = tmp_path / "work"
+
+    jobs_dir.mkdir()
+    work_root.mkdir()
+
+    state_path = (
+        work_root / "server_state.json"
+    )
+
+    state_path.write_text(
+        "{invalid json",
+        encoding="utf-8",
+    )
+
+    server = Server(
+        name="server-a",
+        ssh_alias="server-a",
+        worker_root="/tmp/hive_jobs",
+        comfy_url="http://server-a",
+        comfy_input_batches="/tmp/input",
+        comfy_output_dir="/tmp/output",
+        hive_root="/tmp/Hive",
+        hive_python=(
+            "/tmp/Hive/.venv/bin/python"
+        ),
+        enabled=True,
+        profile={},
+    )
+
+    dispatcher = Dispatcher(
+        jobs_dir=jobs_dir,
+        work_root=work_root,
+        project="test",
+        job_type="comfy",
+        servers=[server],
+    )
+
+    corrupt_path = (
+        work_root
+        / "server_state.json.corrupt"
+    )
+
+    assert state_path.exists() is False
+    assert corrupt_path.exists()
+    assert (
+        corrupt_path.read_text(
+            encoding="utf-8",
+        )
+        == "{invalid json"
+    )
+
+    assert (
+        dispatcher._server_failures[
+            "server-a"
+        ]
+        == 0
+    )
+
+    assert (
+        dispatcher._server_cooldown_until[
+            "server-a"
+        ]
+        == 0.0
+    )
