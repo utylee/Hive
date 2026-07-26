@@ -148,3 +148,64 @@ def test_reset_server_state_for_one_server(
             "for server: m5"
         )
     )
+
+def test_reset_unknown_server_preserves_state(
+    tmp_path,
+    monkeypatch,
+    capsys,
+):
+    jobs_dir = tmp_path / "jobs"
+    work_root = tmp_path / "work"
+
+    jobs_dir.mkdir()
+    work_root.mkdir()
+
+    state_path = (
+        work_root / "server_state.json"
+    )
+
+    original_state = {
+        "m5": {
+            "consecutive_failures": 2,
+            "cooldown_until": None,
+        },
+    }
+
+    state_path.write_text(
+        json.dumps(original_state),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "hive-dispatcher",
+            str(jobs_dir),
+            "--work-root",
+            str(work_root),
+            "--reset-server-state",
+            "unknown-server",
+        ],
+    )
+
+    result = main()
+    captured = capsys.readouterr()
+
+    assert result == 0
+
+    state = json.loads(
+        state_path.read_text(
+            encoding="utf-8",
+        )
+    )
+
+    assert state == original_state
+
+    assert (
+        captured.out.strip()
+        == (
+            "No persisted state found for "
+            "server: unknown-server"
+        )
+    )
